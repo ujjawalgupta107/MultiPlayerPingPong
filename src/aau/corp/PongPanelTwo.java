@@ -26,17 +26,17 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
 
 
     int local_port_number;
-    InetAddress second_ip;
-    int second_port;
+    InetAddress[] second_ip;
+    int[] second_port;
     DatagramSocket clientsocket = new DatagramSocket();
 
-    int startRate = 10;        //frame refreshes after every 100 millisecond
+    int startRate = 20;        //frame refreshes after every 100 millisecond
     Timer timer ;
     int track2 = 0;
-    int boardX = 700;
-    int boardY = 700;
-    int paddle = 100;
-    private int paddleSpeed = 5;
+    int boardX = 300;
+    int boardY = 300;
+    int paddle = 50;
+    private int paddleSpeed = 2;
 
     int n = 1;  //number of balls
     int r = 1;  //ration of the paddle length
@@ -116,16 +116,19 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
     //</editor-fold>
 
     //construct a PongPanel
-    public PongPanelTwo(int localport,InetAddress ip , int port)throws IOException {
+    public PongPanelTwo(int localport,InetAddress[] ip , int[] port)throws IOException {
 
         setBackground(Color.BLACK);
         local_port_number = localport;
+        second_ip = new InetAddress[ip.length];
+        second_port = new int[port.length];
         second_ip = ip;
         second_port = port;
+        //System.out.println("here2");
 
         for(int i = 0 ; i<ballX.length ; i++) {
-            ballX[i] = 350;
-            ballY[i] = 350;
+            ballX[i] = 100;
+            ballY[i] = 100;
             ballDeltaX[i] = 2;
             ballDeltaY[i] = 1;
 
@@ -143,11 +146,19 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
         timer.start();
         clientsocket = new DatagramSocket(local_port_number);
         clientsocket.setSoTimeout(0);
-        String info = playerTwoY + "-" + playerTwoHit + "-" + playerTwoMiss + "-" + playerTwoScore + "-";
+        String info = playerTwoY + "-" + playerTwoHit + "-" + playerTwoMiss + "-" + playerTwoScore + "-" + "2"+"-";
+        
 
-        byte[] senddata = info.getBytes();
-        DatagramPacket sendpack = new DatagramPacket(senddata, senddata.length, second_ip, second_port);
-        clientsocket.send(sendpack);
+        for(int i=0;i<second_ip.length;i++)
+        {
+        	byte[] senddata = info.getBytes();
+            DatagramPacket sendpack = new DatagramPacket(senddata, senddata.length, second_ip[i], second_port[i]);
+            clientsocket.send(sendpack);
+         //   System.out.println("sending to" + second_port[i]);
+        }
+        //byte[] senddata = info.getBytes();
+        //DatagramPacket sendpack = new DatagramPacket(senddata, senddata.length, second_ip[0], second_port[0]);
+        //clientsocket.send(sendpack);
 
     }
 
@@ -170,23 +181,40 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
     }
 
     public void step()throws IOException{
-
+    	
+    	
+    	for(int j=0;j<3;j++)
+    	{
         try {
             DatagramPacket receivePacket = new DatagramPacket(new byte[1024], 1024);
             clientsocket.receive(receivePacket);
             String response = new String(receivePacket.getData());
+            System.out.println("REC: " + new String(receivePacket.getData()));
             String[] splitResponse = response.split("-");
-            playerOneY = Integer.parseInt(splitResponse[0]);
+            if (Integer.parseInt(splitResponse[4])== 1)
+            {playerOneY = Integer.parseInt(splitResponse[0]);
             playerOneHit  = Integer.parseInt(splitResponse[1]);
             playerOneMiss = Integer.parseInt(splitResponse[2]);
-            playerOneScore = Integer.parseInt(splitResponse[3]);
+            playerOneScore = Integer.parseInt(splitResponse[3]);}
+            else if (Integer.parseInt(splitResponse[4])== 3)
+            {playerThreeX = Integer.parseInt(splitResponse[0]);
+            playerThreeHit  = Integer.parseInt(splitResponse[1]);
+            playerThreeMiss = Integer.parseInt(splitResponse[2]);
+            playerThreeScore = Integer.parseInt(splitResponse[3]);}
+            else if (Integer.parseInt(splitResponse[4])== 4)
+            {playerFourX = Integer.parseInt(splitResponse[0]);
+            playerFourHit  = Integer.parseInt(splitResponse[1]);
+            playerFourMiss = Integer.parseInt(splitResponse[2]);
+            playerFourScore = Integer.parseInt(splitResponse[3]);}
+            
+            
 
             //  System.out.println("REC: " + new String(receivePacket.getData()));
 
         } catch (Exception e) {
-            System.out.println("SERVER TIMED OUT");
+            //System.out.println("SERVER TIMED OUT");
         }
-
+    	}
 
         //<editor-fold desc="managing the variable for miss and hit">
         if(playerTwoHit<0){playerTwoHit++;}
@@ -247,10 +275,19 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
 
         }
 
-        String information = playerTwoY + "-" + playerTwoHit + "-" + playerTwoMiss + "-" + playerTwoScore + "-";
-        byte[] senddata = information.getBytes();
-        DatagramPacket sendpacket = new DatagramPacket(senddata, senddata.length, second_ip, second_port);
-        clientsocket.send(sendpacket);
+        String information = playerTwoY + "-" + playerTwoHit + "-" + playerTwoMiss + "-" + playerTwoScore + "-" + "2"+"-";
+        
+        for(int i=0;i<second_ip.length;i++)
+        {
+        	byte[] senddata = information.getBytes();
+            DatagramPacket sendpack = new DatagramPacket(senddata, senddata.length, second_ip[i], second_port[i]);
+            clientsocket.send(sendpack);
+           // System.out.println("sending again to" + second_port[i]);
+        }
+        // byte[] senddata = information.getBytes();
+        //DatagramPacket sendpacket = new DatagramPacket(senddata, senddata.length, second_ip, second_port);
+        //clientsocket.send(sendpacket);
+
 
         //send paddle position(data) a array
         //playerTwoPaddleY = data[0];

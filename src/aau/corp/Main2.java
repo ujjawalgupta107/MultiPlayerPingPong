@@ -20,8 +20,8 @@ public class Main2 {
         PongPanel pongPanel  = new PongPanel();
         frame.add(pongPanel,BorderLayout.CENTER);
 */
-        PongPanelFour pongPanel  = new PongPanelFour();
-        frame.add(pongPanel,BorderLayout.CENTER);
+//        PongPanelFour pongPanel  = new PongPanelFour();
+//        frame.add(pongPanel,BorderLayout.CENTER);
 
         frame.setSize(1000,1000);
         frame.setVisible(true);
