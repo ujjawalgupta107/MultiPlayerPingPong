@@ -34,7 +34,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener{
     int paddle = 50;
     private int paddleSpeed = 2;
 
-    int n = 1;  //number of balls
+    int n = 2;  //number of balls
     int r = 1;  //ration of the paddle length
     int p = 5;  //paddle speed
     int t = 2;  //time ratio
@@ -120,7 +120,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener{
         second_port = new int[port.length];
         second_ip = ip;
         second_port = port;
-       // System.out.println("here1");
+        System.out.println("here1");
 
         //set the values of the variable
 
@@ -131,6 +131,10 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener{
             ballDeltaY[i] = 1;
         }
 
+        ballX[1] = 200;
+        ballY[1] = 200;
+        ballDeltaX[1] = -2;
+        ballDeltaY[1] = 1;
         //listen to key presses
         setFocusable(true);
         addKeyListener(this);
@@ -143,6 +147,9 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener{
         timer.start();
         clientsocket = new DatagramSocket(local_port_number);
         clientsocket.setSoTimeout(0);
+
+
+
         String info = playerOneY + "-" + playerOneHit + "-" + playerOneMiss + "-" + playerOneScore + "-" + "1"+"-";
         
 
@@ -151,7 +158,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener{
         	byte[] senddata = info.getBytes();
             DatagramPacket sendpack = new DatagramPacket(senddata, senddata.length, second_ip[i], second_port[i]);
             clientsocket.send(sendpack);
-          //  System.out.println("sending to" + second_port[i]);
+            System.out.println("sending to" + second_port[i]);
         }
 
 
@@ -178,7 +185,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener{
     public void step()throws IOException{
 
         //set the values of the variable
-    	for(int j=0;j<3;j++)
+    	for(int j=0;j<second_ip.length;j++)
     	{
         try {
             DatagramPacket receivePacket = new DatagramPacket(new byte[1024], 1024);
@@ -208,14 +215,14 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener{
             //  System.out.println("REC: " + new String(receivePacket.getData()));
 
         } catch (Exception e) {
-            //System.out.println("SERVER TIMED OUT");
+            System.out.println("SERVER TIMED OUT");
         }
     	}
 
 
         //<editor-fold desc="managing the variable for miss and hit">
-        if(playerOneHit<0){playerOneHit++;}
-        if(playerOneMiss<0){playerOneMiss++;}
+        if(playerOneHit>0){playerOneHit--;}
+        if(playerOneMiss>0){playerOneMiss--;}
         //</editor-fold>
 
         //where will the ball be after it moves?
@@ -253,9 +260,9 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener{
                 //is it going to miss the paddle?
                 if (nextBallTop[i] >= playerOneBottom || nextBallBottom[i] <= playerOneTop) {
                     ballDeltaX[i] *= -1;
-                    playerOneMiss = -5;
+                    playerOneMiss = 5;
                 } else {
-                    playerOneHit =-10;
+                    playerOneHit =10;
                     playerOneScore++;
                     ballDeltaX[i] *= -1;
                 }
@@ -353,38 +360,38 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener{
 
 
         //<editor-fold desc="dynaically draw colored line">
-        if(playerOneMiss < 0) {
+        if(playerOneMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(playerOneRight, 0, playerOneRight, getHeight());
             g.setColor(Color.white);
-        }else if(playerOneMiss >= 0) {
+        }else if(playerOneMiss == 0) {
             g.setColor(Color.white);
             g.drawLine(playerOneRight, 0, playerOneRight, getHeight());
         }
 
-        if(playerTwoMiss < 0) {
+        if(playerTwoMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(playerTwoLeft, 0, playerTwoLeft, getHeight());
             g.setColor(Color.white);
-        }else if(playerTwoMiss >= 0){
+        }else if(playerTwoMiss == 0){
             g.setColor(Color.white);
             g.drawLine(playerTwoLeft, 0, playerTwoLeft, getHeight());
         }
 
-        if(playerThreeMiss < 0) {
+        if(playerThreeMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(0, playerThreeDown, getWidth(), playerThreeDown);
             g.setColor(Color.white);
-        }else if(playerThreeMiss >= 0){
+        }else if(playerThreeMiss == 0){
             g.setColor(Color.white);
             g.drawLine(0, playerThreeDown, getWidth(), playerThreeDown);
         }
 
-        if(playerFourMiss < 0) {
+        if(playerFourMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(0, playerFourUp, getWidth(), playerFourUp);
             g.setColor(Color.white);
-        }else if(playerFourMiss >= 0){
+        }else if(playerFourMiss == 0){
             g.setColor(Color.white);
             g.drawLine(0, playerFourUp, getWidth(), playerFourUp);
         }
@@ -401,38 +408,38 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener{
         //<editor-fold desc="draw coloer paddles">
         //draw the paddles
         g.setColor(Color.white);
-        if(playerOneHit < 0) {
+        if(playerOneHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
             g.setColor(Color.white);
-        }else if(playerOneHit >= 0) {
+        }else if(playerOneHit == 0) {
             g.setColor(Color.white);
             g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
         }
 
-        if(playerTwoHit < 0) {
+        if(playerTwoHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
             g.setColor(Color.white);
-        }else if(playerTwoHit >= 0){
+        }else if(playerTwoHit == 0){
             g.setColor(Color.white);
             g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
         }
 
-        if(playerThreeHit < 0) {
+        if(playerThreeHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
             g.setColor(Color.white);
-        }else if(playerThreeHit >= 0){
+        }else if(playerThreeHit == 0){
             g.setColor(Color.white);
             g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
         }
 
-        if(playerFourHit < 0) {
+        if(playerFourHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
             g.setColor(Color.white);
-        }else if(playerFourHit >= 0){
+        }else if(playerFourHit == 0){
             g.setColor(Color.white);
             g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
         }

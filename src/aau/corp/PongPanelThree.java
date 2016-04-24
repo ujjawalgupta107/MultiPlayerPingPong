@@ -37,7 +37,7 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     int paddle = 50;
     private int paddleSpeed = 2;
 
-    int n = 1;  //number of balls
+    int n = 2;  //number of balls
     int r = 1;  //ration of the paddle length
     int p = 5;  //paddle speed
     int t = 2;  //time ratio
@@ -134,6 +134,11 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
             ballDeltaY[i] = 1;
         }
 
+        ballX[1] = 200;
+        ballY[1] = 200;
+        ballDeltaX[1] = -2;
+        ballDeltaY[1] = 1;
+
         //listen to key presses
         setFocusable(true);
         addKeyListener(this);
@@ -182,7 +187,7 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
 
         //////////////////////////////////////
     	
-    	for(int j=0;j<3;j++)
+    	for(int j=0;j<second_ip.length;j++)
     	{
         try {
             DatagramPacket receivePacket = new DatagramPacket(new byte[1024], 1024);
@@ -211,14 +216,14 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
             //  System.out.println("REC: " + new String(receivePacket.getData()));
 
         } catch (Exception e) {
-          //  System.out.println("SERVER TIMED OUT");
+            System.out.println("SERVER TIMED OUT");
         }
     	}
 
 
         //<editor-fold desc="managing the variable for miss and hit">
-        if(playerThreeHit<0){playerThreeHit++;}
-        if(playerThreeMiss<0){playerThreeMiss++;}
+        if(playerThreeHit>0){playerThreeHit--;}
+        if(playerThreeMiss>0){playerThreeMiss--;}
         //</editor-fold>
 
         //where will the ball be after it moves?
@@ -245,9 +250,9 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
             if (nextBallTop[i] <= 35) {
                 if (nextBallLeft[i] >= playerThreeRight || nextBallRight[i] <= playerThreeLeft) {
                     ballDeltaY[i] *= -1;
-                    playerThreeMiss= -5;
+                    playerThreeMiss= 5;
                 } else {
-                    playerThreeHit = -10;
+                    playerThreeHit = 10;
                     playerThreeScore++;
                     ballDeltaY[i] *= -1;
                 }
@@ -353,38 +358,38 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
 
 
         //<editor-fold desc="dynaically draw colored line">
-        if(playerOneMiss < 0) {
+        if(playerOneMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(playerOneRight, 0, playerOneRight, getHeight());
             g.setColor(Color.white);
-        }else if(playerOneMiss >= 0) {
+        }else if(playerOneMiss == 0) {
             g.setColor(Color.white);
             g.drawLine(playerOneRight, 0, playerOneRight, getHeight());
         }
 
-        if(playerTwoMiss < 0) {
+        if(playerTwoMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(playerTwoLeft, 0, playerTwoLeft, getHeight());
             g.setColor(Color.white);
-        }else if(playerTwoMiss >= 0){
+        }else if(playerTwoMiss == 0){
             g.setColor(Color.white);
             g.drawLine(playerTwoLeft, 0, playerTwoLeft, getHeight());
         }
 
-        if(playerThreeMiss < 0) {
+        if(playerThreeMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(0, playerThreeDown, getWidth(), playerThreeDown);
             g.setColor(Color.white);
-        }else if(playerThreeMiss >= 0){
+        }else if(playerThreeMiss == 0){
             g.setColor(Color.white);
             g.drawLine(0, playerThreeDown, getWidth(), playerThreeDown);
         }
 
-        if(playerFourMiss < 0) {
+        if(playerFourMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(0, playerFourUp, getWidth(), playerFourUp);
             g.setColor(Color.white);
-        }else if(playerFourMiss >= 0){
+        }else if(playerFourMiss == 0){
             g.setColor(Color.white);
             g.drawLine(0, playerFourUp, getWidth(), playerFourUp);
         }
@@ -401,45 +406,44 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         //<editor-fold desc="draw coloer paddles">
         //draw the paddles
         g.setColor(Color.white);
-        if(playerOneHit < 0) {
+        if(playerOneHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
             g.setColor(Color.white);
-        }else if(playerOneHit >= 0) {
+        }else if(playerOneHit == 0) {
             g.setColor(Color.white);
             g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
         }
 
-        if(playerTwoHit < 0) {
+        if(playerTwoHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
             g.setColor(Color.white);
-        }else if(playerTwoHit >= 0){
+        }else if(playerTwoHit == 0){
             g.setColor(Color.white);
             g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
         }
 
-        if(playerThreeHit < 0) {
+        if(playerThreeHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
             g.setColor(Color.white);
-        }else if(playerThreeHit >= 0){
+        }else if(playerThreeHit == 0){
             g.setColor(Color.white);
             g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
         }
 
-        if(playerFourHit < 0) {
+        if(playerFourHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
             g.setColor(Color.white);
-        }else if(playerFourHit >= 0){
+        }else if(playerFourHit == 0){
             g.setColor(Color.white);
             g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
         }
         //</editor-fold>
 
     }
-
     public void keyTyped(KeyEvent e) {}
 
     public void keyPressed(KeyEvent e) {

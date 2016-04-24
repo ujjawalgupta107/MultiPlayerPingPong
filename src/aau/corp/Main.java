@@ -9,17 +9,20 @@ import java.net.*;
 
 public class Main {
 
+
     public static void main(String arg[]) throws Exception {
-    	
-    	
-    	DatagramSocket clientSocket = new DatagramSocket();
+
+        int connect_port = 7072;
+        int players = 3;
+
+        DatagramSocket clientSocket = new DatagramSocket();
 
         // prepare Data
         byte[] sendData = "Hello".getBytes();
 
         // send Data to Server with fix IP (X.X.X.X)
         // Client1 uses port 7070, Client2 uses port 7071
-        int connect_port =7073;
+
         DatagramPacket sendPacket = new DatagramPacket(sendData,
                 sendData.length, InetAddress.getByName("10.204.153.90"), connect_port);
         clientSocket.send(sendPacket);
@@ -33,68 +36,57 @@ public class Main {
         String response = new String(receivePacket.getData());
         String[] splitResponse = response.split("-");
         //System.out.println(splitResponse.length);
-        InetAddress ip1 = InetAddress.getByName(splitResponse[0].substring(1));
-        InetAddress ip2 = InetAddress.getByName(splitResponse[2].substring(1));
-        InetAddress ip3 = InetAddress.getByName(splitResponse[4].substring(1));
-        
-        InetAddress[] send_ip = {ip1,ip2,ip3};
-        
-        int port1 = Integer.parseInt(splitResponse[1]);
-        int port2 = Integer.parseInt(splitResponse[3]);
-        int port3 = Integer.parseInt(splitResponse[5]);
-        
-        int[] send_port = {port1,port2,port3};
-        
-        // output converted Data for check
-        System.out.println("IP1: " + ip1 + " PORT1: " + port1);
-        System.out.println("IP2: " + ip2 + " PORT2: " + port2);
-        System.out.println("IP3: " + ip3 + " PORT3: " + port3);
+        if (players ==2) {
 
-        // close socket and open new socket with SAME localport
-        int localPort = clientSocket.getLocalPort();
-        clientSocket.close();
-        
-        
-        JFrame frame = new JFrame("Ping Pong");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-        JLabel aman = new JLabel();
-        
-        
-        if (connect_port == 7070 )
-        {
-        	aman.setText("PLAYER 1");
-        	frame.add(aman,BorderLayout.PAGE_START);
-        	PongPanelOne pongPanel  = new PongPanelOne(localPort,send_ip,send_port);
-        	frame.add(pongPanel,BorderLayout.CENTER);
-        	
-        }
-        else if (connect_port ==7071)
-        {
-        	aman.setText("PLAYER 2");
-        	frame.add(aman,BorderLayout.PAGE_START);
-        	PongPanelTwo pongPanel  = new PongPanelTwo(localPort,send_ip,send_port);
-        	frame.add(pongPanel,BorderLayout.CENTER);
-        }
-        else if (connect_port ==7072)
-        {
-        	aman.setText("PLAYER 3");
-        	frame.add(aman,BorderLayout.PAGE_START);
-        	PongPanelThree pongPanel  = new PongPanelThree(localPort,send_ip,send_port);
-        	frame.add(pongPanel,BorderLayout.CENTER);
-        }
-        else if (connect_port ==7073)
-        {
-        	aman.setText("PLAYER 4");
-        	frame.add(aman,BorderLayout.PAGE_START);
-        	PongPanelFour pongPanel  = new PongPanelFour(localPort,send_ip,send_port);
-        	frame.add(pongPanel,BorderLayout.CENTER);
-        }
+            InetAddress ip1 = InetAddress.getByName(splitResponse[0].substring(1));
 
-        
-        
 
-        //PongPanelTest pongPanel  = new PongPanelTest(localPort,ip1,port1);
+            InetAddress[] send_ip = {ip1};
+
+            int port1 = Integer.parseInt(splitResponse[1]);
+
+
+            int[] send_port = {port1};
+
+            // output converted Data for check
+            System.out.println("IP1: " + ip1 + " PORT1: " + port1);
+
+            // close socket and open new socket with SAME localport
+            int localPort = clientSocket.getLocalPort();
+            clientSocket.close();
+
+
+            JFrame frame = new JFrame("Ping Pong");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLayout(new BorderLayout());
+            JLabel aman = new JLabel();
+
+
+            if (connect_port == 7070) {
+                aman.setText("PLAYER 1");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelOne pongPanel = new PongPanelOne(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+
+            } else if (connect_port == 7071) {
+                aman.setText("PLAYER 2");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelTwo pongPanel = new PongPanelTwo(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+            } else if (connect_port == 7072) {
+                aman.setText("PLAYER 3");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelThree pongPanel = new PongPanelThree(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+            } else if (connect_port == 7073) {
+                aman.setText("PLAYER 4");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelFour pongPanel = new PongPanelFour(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+            }
+
+
+            //PongPanelTest pongPanel  = new PongPanelTest(localPort,ip1,port1);
         
         
         
@@ -104,11 +96,151 @@ public class Main {
         frame.add(startScreen,BorderLayout.CENTER);
 */
 
-        frame.setSize(300,300);
-        frame.setVisible(true);
-        
-        // close connection
-       // clientSocket.close();
+            frame.setSize(400, 400);
+            frame.setVisible(true);
 
+            // close connection
+            // clientSocket.close();
+
+        }
+        else if(players==3)
+        {
+            InetAddress ip1 = InetAddress.getByName(splitResponse[0].substring(1));
+            InetAddress ip2 = InetAddress.getByName(splitResponse[2].substring(1));
+
+            InetAddress[] send_ip = {ip1, ip2};
+
+            int port1 = Integer.parseInt(splitResponse[1]);
+            int port2 = Integer.parseInt(splitResponse[3]);
+
+            int[] send_port = {port1, port2};
+
+            // output converted Data for check
+            System.out.println("IP1: " + ip1 + " PORT1: " + port1);
+            System.out.println("IP2: " + ip2 + " PORT2: " + port2);
+
+            // close socket and open new socket with SAME localport
+            int localPort = clientSocket.getLocalPort();
+            clientSocket.close();
+
+
+            JFrame frame = new JFrame("Ping Pong");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLayout(new BorderLayout());
+            JLabel aman = new JLabel();
+
+
+            if (connect_port == 7070) {
+                aman.setText("PLAYER 1");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelOne pongPanel = new PongPanelOne(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+
+            } else if (connect_port == 7071) {
+                aman.setText("PLAYER 2");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelTwo pongPanel = new PongPanelTwo(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+            } else if (connect_port == 7072) {
+                aman.setText("PLAYER 3");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelThree pongPanel = new PongPanelThree(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+            } else if (connect_port == 7073) {
+                aman.setText("PLAYER 4");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelFour pongPanel = new PongPanelFour(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+            }
+
+
+            //PongPanelTest pongPanel  = new PongPanelTest(localPort,ip1,port1);
+
+
+
+/*
+
+        StartScreen startScreen = new StartScreen();
+        frame.add(startScreen,BorderLayout.CENTER);
+*/
+
+            frame.setSize(400, 400);
+            frame.setVisible(true);
+
+            // close connection
+            // clientSocket.close();
+
+        }
+        else
+        {
+            InetAddress ip1 = InetAddress.getByName(splitResponse[0].substring(1));
+            InetAddress ip2 = InetAddress.getByName(splitResponse[2].substring(1));
+            InetAddress ip3 = InetAddress.getByName(splitResponse[4].substring(1));
+
+            InetAddress[] send_ip = {ip1, ip2, ip3};
+
+            int port1 = Integer.parseInt(splitResponse[1]);
+            int port2 = Integer.parseInt(splitResponse[3]);
+            int port3 = Integer.parseInt(splitResponse[5]);
+
+            int[] send_port = {port1, port2, port3};
+
+            // output converted Data for check
+            System.out.println("IP1: " + ip1 + " PORT1: " + port1);
+            System.out.println("IP2: " + ip2 + " PORT2: " + port2);
+            System.out.println("IP3: " + ip3 + " PORT3: " + port3);
+
+            // close socket and open new socket with SAME localport
+            int localPort = clientSocket.getLocalPort();
+            clientSocket.close();
+
+
+            JFrame frame = new JFrame("Ping Pong");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLayout(new BorderLayout());
+            JLabel aman = new JLabel();
+
+
+            if (connect_port == 7070) {
+                aman.setText("PLAYER 1");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelOne pongPanel = new PongPanelOne(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+
+            } else if (connect_port == 7071) {
+                aman.setText("PLAYER 2");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelTwo pongPanel = new PongPanelTwo(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+            } else if (connect_port == 7072) {
+                aman.setText("PLAYER 3");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelThree pongPanel = new PongPanelThree(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+            } else if (connect_port == 7073) {
+                aman.setText("PLAYER 4");
+                frame.add(aman, BorderLayout.PAGE_START);
+                PongPanelFour pongPanel = new PongPanelFour(localPort, send_ip, send_port);
+                frame.add(pongPanel, BorderLayout.CENTER);
+            }
+
+
+            //PongPanelTest pongPanel  = new PongPanelTest(localPort,ip1,port1);
+
+
+
+/*
+
+        StartScreen startScreen = new StartScreen();
+        frame.add(startScreen,BorderLayout.CENTER);
+*/
+
+            frame.setSize(400, 400);
+            frame.setVisible(true);
+
+            // close connection
+            // clientSocket.close();
+
+        }
     }
 }
