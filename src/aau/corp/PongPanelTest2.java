@@ -1,3 +1,4 @@
+/*
 //things to send
 //paddleY
 //score
@@ -8,9 +9,11 @@
 package aau.corp;
 //reference: http://staticvoidgames.com
 
+*/
 /**
  * Created by Ujjawal Gupta on 03-Apr-16.
- */
+ *//*
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -66,7 +69,9 @@ public class PongPanelTest2 extends JPanel implements ActionListener, KeyListene
     int[] nextBallX         =   new int[n];
     int[] nextBallY         =   new int[n];
 
-    //<editor-fold desc="variable for paddle position of each player ">
+    */
+/*//*
+/<editor-fold desc="variable for paddle position of each player ">
     //payer paddles initial position
     //at left
     private int playerOneX = 25;
@@ -110,6 +115,7 @@ public class PongPanelTest2 extends JPanel implements ActionListener, KeyListene
     int playerThreeMiss  =0;//value obtained
     int playerFourMiss   =0;//value obtained
     //</editor-fold>
+*//*
 
     //construct a PongPanel
     public PongPanelTest2(){
@@ -181,14 +187,14 @@ public class PongPanelTest2 extends JPanel implements ActionListener, KeyListene
             nextBallY[i]         = (ballY[i] + ballY[i])/2;
         }
         movePaddles();
+
         if(time>150 & n==4){
-        ballCollision(3,3);
+            ballCollision(3,3);
         }if(time<=150 & time>100 & n>=3){
             ballCollision(2,2);
         }if(time<=100 & time>50 & n>=2){
             ballCollision(1,1);
         }
-
         //<editor-fold desc="defining variables for paddle position for each player">
         
         int playerTwoLeft = playerTwoX;
@@ -442,4 +448,4 @@ public class PongPanelTest2 extends JPanel implements ActionListener, KeyListene
             }
         }
     }
-}
+}*/

@@ -9,13 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Collections;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class PongPanel extends JPanel implements ActionListener, KeyListener{
 
-    int startRate = 100;        //frame refreshes after every 100 millisecond
+    int startRate = 10;        //frame refreshes after every 100 millisecond
     Timer timer ;
     int track2 = 0;
     int boardX = 700;
@@ -23,10 +24,10 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener{
     int paddle = 100;
     private int paddleSpeed = 5;
 
-    int n = 1;  //number of balls
-    int r = 1;  //ration of the paddle length
+    int n = 2;  //number of balls
+    int r = 5;  //ration of the paddle length
     int p = 5;  //paddle speed
-    int t = 2;  //time ratio
+    int t = 1;  //time ratio
 
     //<editor-fold desc="boolean variable for keyPressed">
     private boolean upPressed = false;
@@ -113,8 +114,8 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener{
         for(int i = 0 ; i<ballX.length ; i++) {
             ballX[i] = random(boardX / 2 - 50, boardX / 2 + 50);
             ballY[i] = random(boardY / 2 - 50, boardY / 2 + 50);
-            ballDeltaX[i] = random(-5, 5);
-            ballDeltaY[i] = random(-5, 5);
+            ballDeltaX[i] = random(-3, 3);
+            ballDeltaY[i] = random(-3, 3);
         }
 
         //listen to key presses
@@ -137,7 +138,9 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener{
         if(track2==t){
             track2 =0;
             //move the paddle of player one automatically
-            //movePlayerOne();
+            movePlayerOne();
+            movePlayerThree();
+            movePlayerTwo();
         }
     }
 
@@ -258,6 +261,8 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener{
                 }
             }
 
+
+
             //move the ball
             ballX[i] += ballDeltaX[i];
             ballY[i] += ballDeltaY[i];
@@ -324,15 +329,58 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener{
         int playerMiddleY = playerOneY+playerOneHeight/2;   //middle of the paddle of player one
         //ball moving in opposite direction and will not hit the goal of player one
 
+        int  i = findMinXIndex();
 
-        if ((playerMiddleY - ballY[1] <= -(paddle / (2 * r))) || (2 < 0)) {
-            if (playerOneY + paddleSpeed + playerOneHeight <= (boardY - 35)) {
-                playerOneY += paddleSpeed;
+            if ((playerMiddleY - ballY[i] <= -(paddle / (2 * r))) || (2 < 0)) {
+                if (playerOneY + paddleSpeed + playerOneHeight <= (boardY - 35)) {
+                    playerOneY += paddleSpeed;
+                }
+            }
+            if ((playerMiddleY - ballY[i] >= (paddle / (2 * r))) || (2 < 0)) {
+                if (playerOneY - paddleSpeed >= 35) {
+                    playerOneY -= paddleSpeed;
+                }
+            }
+    }
+
+    //AI for playerTwo
+    public void movePlayerTwo(){
+
+        int paddleSpeed = p;                                //ability of the computer player depends on the paddle speed of the computer player
+        int playerMiddleY = playerTwoY+playerTwoHeight/2;   //middle of the paddle of player one
+        //ball moving in opposite direction and will not hit the goal of player one
+
+        int  i = findMaxXIndex();
+
+        if ((playerMiddleY - ballY[i] <= -(paddle / (2 * r))) ) {
+            if (playerTwoY + paddleSpeed + playerTwoHeight <= (boardY - 35)) {
+                playerTwoY += paddleSpeed;
             }
         }
-        if ((playerMiddleY - ballY[1] >= (paddle / (2 * r))) || (2 < 0)) {
-            if (playerOneY - paddleSpeed >= 35) {
-                playerOneY -= paddleSpeed;
+        if ((playerMiddleY - ballY[i] >= (paddle / (2 * r)))) {
+            if (playerTwoY - paddleSpeed >= 35) {
+                playerTwoY -= paddleSpeed;
+            }
+        }
+    }
+
+    //AI for playerThree
+    public void movePlayerThree(){
+
+        int paddleSpeed = p;                                //ability of the computer player depends on the paddle speed of the computer player
+        int playerMiddleX = playerThreeX+playerThreeWidth/2;   //middle of the paddle of player one
+        //ball moving in opposite direction and will not hit the goal of player one
+
+        int  i = findMinYIndex();
+
+        if ((ballX[i] - playerMiddleX >= (paddle / (2 * r))) ) {
+            if (playerThreeX + paddleSpeed + playerThreeWidth <= (boardX - 35)) {
+                playerThreeX += paddleSpeed;
+            }
+        }
+        if ((playerMiddleX - ballX[i] >= (paddle / (2 * r))) ) {
+            if (playerThreeX - paddleSpeed >= 35) {
+                playerThreeX-= paddleSpeed;
             }
         }
     }
@@ -519,6 +567,103 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener{
             i = min + (int)(Math.random() * (max- min +1));
         }
         return (int)i;
+    }
+
+    //find index of minimum value of ballX according to ballDeltaX
+    //gives the index of the ball that the player one has to hit
+    public int findMinXIndex(){
+        int[] arr = ballX;
+        int index = -1;
+        int value = -1;
+        for(int i = 1 ; i<arr.length ; i++){
+            if(ballDeltaX[i] <0 ){
+                if(index ==-1) {
+                    index = i;
+                    value = arr[i];
+                }
+                if(index!=-1 & value > arr[i]){
+                    index = i;
+                    value = arr[i];
+                }
+            }
+        }
+        if(index == -1) {
+            index = 0;
+            value = arr[0];
+            for(int i = 1 ; i<arr.length ; i++){
+                if(value < arr[i]){
+                    index = i;
+                    value = arr[i];
+                }
+            }
+        }
+        System.out.println(index);
+        return index;
+    }
+
+    //find index of max value of ballX according to ballDeltaX
+    //gives the index of the ball that the player two has to hit
+    public int findMaxXIndex(){
+        int[] arr = ballX;
+        int index = -1;
+        int value = -1;
+        for(int i = 1 ; i<arr.length ; i++){
+            if(ballDeltaX[i] >0 ){
+                if(index ==-1) {
+                    index = i;
+                    value = arr[i];
+                }
+                if(index!=-1 & value < arr[i]){
+                    index = i;
+                    value = arr[i];
+                }
+            }
+        }
+        if(index == -1) {
+            index = 0;
+            value = arr[0];
+            for(int i = 1 ; i<arr.length ; i++){
+                if(value < arr[i]){
+                    index = i;
+                    value = arr[i];
+                }
+            }
+        }
+        System.out.println(index);
+        return index;
+    }
+
+
+    //find index of minimum value of ballY according to ballDeltaY
+    //gives the index of ball that player 3 has to hit
+    public int findMinYIndex(){
+        int[] arr = ballY;
+        int index = -1;
+        int value = -1;
+        for(int i = 1 ; i<arr.length ; i++){
+            if(ballDeltaY[i] <0 ){
+                if(index ==-1) {
+                    index = i;
+                    value = arr[i];
+                }
+                if(index!=-1 & value > arr[i]){
+                    index = i;
+                    value = arr[i];
+                }
+            }
+        }
+        if(index == -1) {
+            index = 0;
+            value = arr[0];
+            for(int i = 1 ; i<arr.length ; i++){
+                if(value > arr[i]){
+                    index = i;
+                    value = arr[i];
+                }
+            }
+        }
+        System.out.println(index);
+        return index;
     }
 
     //checks for collisions and handles the event

@@ -1,4 +1,5 @@
 package aau.corp;
+
 //reference: http://staticvoidgames.com
 
 /**
@@ -10,21 +11,36 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.DatagramPacket;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class PongPanelThree extends JPanel implements ActionListener, KeyListener{
 
-    int startRate = 10;        //frame refreshes after every 100 millisecond
+
+    boolean connection1=true;
+    boolean connection2 = true;
+    boolean connection4 = true;
+
+
+    int local_port_number;
+    InetAddress[] second_ip;
+    int[] second_port;
+    DatagramSocket clientsocket = new DatagramSocket();
+
+    int startRate = 20;        //frame refreshes after every 100 millisecond
     Timer timer ;
     int track2 = 0;
-    int boardX = 700;
-    int boardY = 700;
-    int paddle = 100;
-    private int paddleSpeed = 5;
+    int boardX = 300;
+    int boardY = 300;
+    int paddle = 50;
+    private int paddleSpeed = 2;
+    int time = 0;
 
-    int n = 1;  //number of balls
+    int n = 2;  //number of balls
     int r = 1;  //ration of the paddle length
     int p = 5;  //paddle speed
     int t = 2;  //time ratio
@@ -48,6 +64,9 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
 
     private int ballDeltaX[] = new int[n];
     private int ballDeltaY[] = new int[n];
+
+    int[] BallDeltaXArray = {-2, 3, -1, -2};
+    int[] BallDeltaYArray = {1, 1, 3, -2};
 
     int[] nextBallLeft      =   new int[n];
     int[] nextBallRight     =   new int[n];
@@ -103,14 +122,22 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     //</editor-fold>
 
     //construct a PongPanel
-    public PongPanelThree(){
+    public PongPanelThree(int localport,InetAddress[] ip , int[] port) throws IOException{
+
+
         setBackground(Color.BLACK);
+        local_port_number = localport;
+        second_ip = new InetAddress[ip.length];
+        second_port = new int[port.length];
+        second_ip = ip;
+        second_port = port;
+        //System.out.println("here3");
 /////////////////////////////////////////////////////////////////////
         for(int i = 0 ; i<ballX.length ; i++) {
-            ballX[i] = 350;
-            ballY[i] = 350;
-            ballDeltaX[i] = 2;
-            ballDeltaY[i] = 1;
+            ballX[i] = boardX / 2 - 7;            //has to be changed by ujjwal
+            ballY[i] = boardY / 2 - 7;            //has to be changed by ujjwal
+            ballDeltaX[i] = BallDeltaXArray[i] ;
+            ballDeltaY[i] = BallDeltaYArray[i] ;
         }
 
         //listen to key presses
@@ -123,12 +150,31 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         //      startTimer(startRate);
         timer = new Timer(startRate, this);
         timer.start();
+        clientsocket = new DatagramSocket(local_port_number);
+        clientsocket.setSoTimeout(5000);
+        String information = playerThreeX + "-" + playerThreeHit + "-" + playerThreeMiss + "-" + playerThreeScore + "-" + "3"+"-";
+
+
+        for(int i=0;i<second_ip.length;i++)
+        {
+            byte[] senddata = information.getBytes();
+            DatagramPacket sendpack = new DatagramPacket(senddata, senddata.length, second_ip[i], second_port[i]);
+            clientsocket.send(sendpack);
+            //System.out.println("sending to" + second_port[i]);
+        }
+
 
         ///////////////////////////////////////////
     }
 
     public void actionPerformed(ActionEvent e){
-       step();
+        try {
+            step();
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+
+        }
         //will control the reaction rate of the computer player
         track2 = track2 +1;
         if(track2==t){
@@ -138,13 +184,111 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         }
     }
 
-    public void step(){
+    public void step()throws IOException{
+
+        int a=0;
+        int b=0;
+        int c=0;
 
         //////////////////////////////////////
 
+        for(int j=0;j<second_ip.length;j++)
+        {
+            try {
+                if (connection1 == true || connection2 == true || connection4 ==true)
+                {
+                    DatagramPacket receivePacket = new DatagramPacket(new byte[1024], 1024);
+                    clientsocket.receive(receivePacket);
+                    String response = new String(receivePacket.getData());
+                    System.out.println("REC: " + new String(receivePacket.getData()));
+                    String[] splitResponse = response.split("-");
+                    if (Integer.parseInt(splitResponse[4]) == 1) {
+                        playerOneY = Integer.parseInt(splitResponse[0]);
+                        playerOneHit = Integer.parseInt(splitResponse[1]);
+                        playerOneMiss = Integer.parseInt(splitResponse[2]);
+                        playerOneScore = Integer.parseInt(splitResponse[3]);
+                        a=1;
+                    } else if (Integer.parseInt(splitResponse[4]) == 2) {
+                        playerTwoY = Integer.parseInt(splitResponse[0]);
+                        playerTwoHit = Integer.parseInt(splitResponse[1]);
+                        playerTwoMiss = Integer.parseInt(splitResponse[2]);
+                        playerTwoScore = Integer.parseInt(splitResponse[3]);
+                        b=1;
+                    } else if (Integer.parseInt(splitResponse[4]) == 4) {
+                        playerFourX = Integer.parseInt(splitResponse[0]);
+                        playerFourHit = Integer.parseInt(splitResponse[1]);
+                        playerFourMiss = Integer.parseInt(splitResponse[2]);
+                        playerFourScore = Integer.parseInt(splitResponse[3]);
+                        c=1;
+                    }
+                }
+
+                if(a*b*c==0)
+                {
+                    if(a==0)
+                    {
+                        playerOneY = boardY / 2 - paddle / 2;
+                        playerOneHit = 0;
+                        playerOneMiss = 0;
+                        playerOneScore = 0;
+                    }
+
+                    if (b==0)
+                    {
+                        playerTwoY = boardY / 2 - paddle / 2;
+                        playerTwoHit = 0;
+                        playerTwoMiss = 0;
+                        playerTwoScore = 0;
+                    }
+
+                    if (c==0)
+                    {
+                        playerFourX = boardY / 2 - paddle / 2;
+                        playerFourHit = 0;
+                        playerFourMiss = 0;
+                        playerFourScore = 0;
+
+                    }
+
+                }
+                //  System.out.println("REC: " + new String(receivePacket.getData()));
+
+            } catch (Exception e) {
+                System.out.println("SERVER TIMED OUT");
+                if (a==0)
+                {connection1 = false;}
+                if(b==0)
+                {connection2 = false;}
+                if(c==0)
+                {connection4 = false;}
+            }
+        }
+
+
+        if (time == 0) {
+            ballDeltaX[0] = BallDeltaXArray[0];
+            ballDeltaY[0] = BallDeltaYArray[0];
+        }
+        if ((time == 50) & (n >= 2)) {
+            ballDeltaX[1] = BallDeltaXArray[1];
+            ballDeltaY[1] = BallDeltaYArray[1];
+        }
+        if ((time == 100) & (n >= 3)) {
+            ballDeltaX[2] = BallDeltaXArray[2];
+            ballDeltaY[2] = BallDeltaYArray[2];
+        }
+        if ((time == 150) & (n >= 4)) {
+            ballDeltaX[3] = BallDeltaXArray[3];
+            ballDeltaY[3] = BallDeltaYArray[3];
+        }
+
+        if (time <= 200) {
+            time++;
+        }
+
         //<editor-fold desc="managing the variable for miss and hit">
-        if(playerThreeHit<0){playerThreeHit++;}
-        if(playerThreeMiss<0){playerThreeMiss++;}
+        if(playerThreeHit>0){playerThreeHit--;}
+        if(playerThreeMiss>0){playerThreeMiss--;}
         //</editor-fold>
 
         //where will the ball be after it moves?
@@ -157,13 +301,21 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
             nextBallY[i]         = (ballY[i] + ballY[i])/2;
         }
         movePaddles();
-        ballCollision();
 
+        if (time > 150 & n == 4) {
+            ballCollision(3, 3);
+        }
+        if (time <= 150 & time > 100 & n >= 3) {
+            ballCollision(2, 2);
+        }
+        if (time <= 100 & time > 50 & n >= 2) {
+            ballCollision(1, 1);
+        }
         //<editor-fold desc="defining variables for paddle position for each player">
         int playerThreeTop = playerThreeY +playerThreeHeight;
         int playerThreeLeft = playerThreeX;
         int playerThreeRight = playerThreeX + playerThreeWidth;
-       //</editor-fold>
+        //</editor-fold>
 
         for(int i = 0 ; i<ballX.length ; i++) {
 
@@ -171,9 +323,9 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
             if (nextBallTop[i] <= 35) {
                 if (nextBallLeft[i] >= playerThreeRight || nextBallRight[i] <= playerThreeLeft) {
                     ballDeltaY[i] *= -1;
-                    playerThreeMiss= -5;
+                    playerThreeMiss= 5;
                 } else {
-                    playerThreeHit = -10;
+                    playerThreeHit = 10;
                     playerThreeScore++;
                     ballDeltaY[i] *= -1;
                 }
@@ -200,6 +352,15 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         }
 
         //////////////////////////
+        String information = playerThreeX + "-" + playerThreeHit + "-" + playerThreeMiss + "-" + playerThreeScore + "-" + "3"+"-";
+
+        for(int i=0;i<second_ip.length;i++)
+        {
+            byte[] senddata = information.getBytes();
+            DatagramPacket sendpack = new DatagramPacket(senddata, senddata.length, second_ip[i], second_port[i]);
+            clientsocket.send(sendpack);
+            //   System.out.println("sending again to" + second_port[i]);
+        }
 
         //stuff has moved, tell this JPanel to repaint itself
         repaint();
@@ -270,38 +431,38 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
 
 
         //<editor-fold desc="dynaically draw colored line">
-        if(playerOneMiss < 0) {
+        if(playerOneMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(playerOneRight, 0, playerOneRight, getHeight());
             g.setColor(Color.white);
-        }else if(playerOneMiss >= 0) {
+        }else if(playerOneMiss == 0) {
             g.setColor(Color.white);
             g.drawLine(playerOneRight, 0, playerOneRight, getHeight());
         }
 
-        if(playerTwoMiss < 0) {
+        if(playerTwoMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(playerTwoLeft, 0, playerTwoLeft, getHeight());
             g.setColor(Color.white);
-        }else if(playerTwoMiss >= 0){
+        }else if(playerTwoMiss == 0){
             g.setColor(Color.white);
             g.drawLine(playerTwoLeft, 0, playerTwoLeft, getHeight());
         }
 
-        if(playerThreeMiss < 0) {
+        if(playerThreeMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(0, playerThreeDown, getWidth(), playerThreeDown);
             g.setColor(Color.white);
-        }else if(playerThreeMiss >= 0){
+        }else if(playerThreeMiss == 0){
             g.setColor(Color.white);
             g.drawLine(0, playerThreeDown, getWidth(), playerThreeDown);
         }
 
-        if(playerFourMiss < 0) {
+        if(playerFourMiss > 0) {
             g.setColor(Color.RED);
             g.drawLine(0, playerFourUp, getWidth(), playerFourUp);
             g.setColor(Color.white);
-        }else if(playerFourMiss >= 0){
+        }else if(playerFourMiss == 0){
             g.setColor(Color.white);
             g.drawLine(0, playerFourUp, getWidth(), playerFourUp);
         }
@@ -318,45 +479,44 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         //<editor-fold desc="draw coloer paddles">
         //draw the paddles
         g.setColor(Color.white);
-        if(playerOneHit < 0) {
+        if(playerOneHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
             g.setColor(Color.white);
-        }else if(playerOneHit >= 0) {
+        }else if(playerOneHit == 0) {
             g.setColor(Color.white);
             g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
         }
 
-        if(playerTwoHit < 0) {
+        if(playerTwoHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
             g.setColor(Color.white);
-        }else if(playerTwoHit >= 0){
+        }else if(playerTwoHit == 0){
             g.setColor(Color.white);
             g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
         }
 
-        if(playerThreeHit < 0) {
+        if(playerThreeHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
             g.setColor(Color.white);
-        }else if(playerThreeHit >= 0){
+        }else if(playerThreeHit == 0){
             g.setColor(Color.white);
             g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
         }
 
-        if(playerFourHit < 0) {
+        if(playerFourHit > 0) {
             g.setColor(Color.GREEN);
             g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
             g.setColor(Color.white);
-        }else if(playerFourHit >= 0){
+        }else if(playerFourHit == 0){
             g.setColor(Color.white);
             g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
         }
         //</editor-fold>
 
     }
-
     public void keyTyped(KeyEvent e) {}
 
     public void keyPressed(KeyEvent e) {
@@ -388,13 +548,13 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     }
 
     //checks for collisions and handles the event
-    public void ballCollision(){
-        for(int i = 0 ; i<ballX.length ; i++){
+    public void ballCollision(int I, int J) {
+        for (int i = 0; i < I; i++) {
 
-            for (int j = i+1; j < ballX.length; j++) {
+            for (int j = i + 1; j < J; j++) {
 
-                int distance = (int) Math.sqrt( (nextBallX[i] - nextBallX[j])*(nextBallX[i] - nextBallX[j]) + (nextBallY[i] - nextBallY[j])*(nextBallY[i] - nextBallY[j])) ;
-                if(distance < diameter){
+                int distance = (int) Math.sqrt((nextBallX[i] - nextBallX[j]) * (nextBallX[i] - nextBallX[j]) + (nextBallY[i] - nextBallY[j]) * (nextBallY[i] - nextBallY[j]));
+                if (distance < diameter) {
                     int temp;
                     temp = ballDeltaX[i];
                     ballDeltaX[i] = ballDeltaX[j];
