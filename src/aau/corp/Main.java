@@ -7,19 +7,19 @@ import java.net.*;
 
 public class Main {
 
-    public Main() throws IOException {
+    public Main(int i) throws IOException {
         start1();
     }
 
-    public Main(int port) throws IOException {
-        start(port);
+    public Main(int port, int no_of_players) throws IOException {
+        start(port, no_of_players);
     }
 
-    public void start(int port) throws IOException {
+    public void start(int port, int no_of_players) throws IOException {
 
         int connect_port = port;
 
-        int players = 2;
+        int players = no_of_players;
         DatagramSocket clientSocket = new DatagramSocket();
         // prepare Data
         byte[] sendData = "Hello".getBytes();

@@ -227,26 +227,26 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
                 {
                     if(a==0)
                     {
-                        playerOneY = boardY / 2 - paddle / 2;
+                        //playerOneY = boardY / 2 - paddle / 2;
                         playerOneHit = 0;
                         playerOneMiss = 0;
-                        playerOneScore = 0;
+                        //playerOneScore = 0;
                     }
 
                     if (b==0)
                     {
-                        playerTwoY = boardY / 2 - paddle / 2;
+                        //playerTwoY = boardY / 2 - paddle / 2;
                         playerTwoHit = 0;
                         playerTwoMiss = 0;
-                        playerTwoScore = 0;
+                        //playerTwoScore = 0;
                     }
 
                     if (c==0)
                     {
-                        playerThreeX = boardY / 2 - paddle / 2;
+                        //playerThreeX = boardY / 2 - paddle / 2;
                         playerThreeHit = 0;
                         playerThreeMiss = 0;
-                        playerThreeScore = 0;
+                        //playerThreeScore = 0;
 
                     }
 
