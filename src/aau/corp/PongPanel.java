@@ -453,11 +453,18 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener{
         //</editor-fold>
 
         //draw the scores
-        g.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
-        g.drawString("player 1: "+ String.valueOf(playerOneScore), 100, 100);
-        g.drawString("player 2: "+String.valueOf(playerTwoScore), 300, 100);
-        g.drawString("player 3: "+String.valueOf(playerThreeScore), 100, 150);
-        g.drawString("player 4: "+String.valueOf(playerFourScore), 300, 150);
+        g.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+        g.drawString("SCORE "+ String.valueOf(playerOneScore), boardX/2+2, boardY/2-25);
+        g.drawString("P1: "+ String.valueOf(playerOneScore), boardX/2-100, boardY/2-5);
+        g.drawString("P2: "+ String.valueOf(playerTwoScore), boardX/2-50, boardY/2-5);
+        g.drawString("P3: "+ String.valueOf(playerThreeScore), boardX/2+10, boardY/2-5);
+        g.drawString("P4: "+ String.valueOf(playerFourScore), boardX/2+60, boardY/2-5);
+
+        g.drawString("FOULS "+ String.valueOf(playerOneScore), boardX/2+2, boardY/2+50);
+        g.drawString("P1: "+ String.valueOf(playerOneScore), boardX/2-100, boardY/2+25);
+        g.drawString("P2: "+ String.valueOf(playerTwoScore), boardX/2-50, boardY/2+25);
+        g.drawString("P3: "+ String.valueOf(playerThreeScore), boardX/2+10, boardY/2+25);
+        g.drawString("P4: "+ String.valueOf(playerFourScore), boardX/2+60, boardY/2+25);
 
 
         //<editor-fold desc="draw coloer paddles">

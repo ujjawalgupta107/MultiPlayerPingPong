@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
-import static aau.corp.StartScreen.frame;
-
 
 /**
  * Created by Ujjawal Gupta on 25-Apr-16.
@@ -15,13 +13,15 @@ public class JoinGame {
     private JButton joinGameButton;
     private JTextField textField1;
 
-    public JoinGame(){
+    public JoinGame(JFrame frame){
 
         joinGameButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     submit(textField1);
+                    frame.dispose();
+                    System.out.println("rrrrrrrr");
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -35,14 +35,13 @@ public class JoinGame {
         Main m = new Main(Integer.parseInt(textField1.getText()));//send the address of the host and port
     }
 
-
     public static void main(String[] arg) {
 
-        JFrame frame = new JFrame("Create Game");
-        frame.setContentPane((new JoinGame()).joinview);
-        frame.setDefaultCloseOperation(3);
-        frame.pack();
-        frame.setSize(500, 200);
-        frame.setVisible(true);
+        JFrame jframe = new JFrame("Create Game");
+        jframe.setContentPane((new JoinGame(jframe)).joinview);
+        jframe.setDefaultCloseOperation(3);
+        jframe.pack();
+        jframe.setSize(500, 200);
+        jframe.setVisible(true);
     }
 }

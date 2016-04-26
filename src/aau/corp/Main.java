@@ -33,8 +33,9 @@ public class Main {
 
         // receive Data ==> Format:"<IP of other Client>-<Port of other Client>"
         DatagramPacket receivePacket = new DatagramPacket(new byte[1024], 1024);
-        clientSocket.receive(receivePacket);
 
+        System.out.print("Ujjawal");
+        clientSocket.receive(receivePacket);        //this line is not being executed
 
         // Convert Response to IP and Port
         String response = new String(receivePacket.getData());

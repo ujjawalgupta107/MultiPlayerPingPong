@@ -1,15 +1,7 @@
 package aau.corp;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.IOException;
-
-import static com.sun.deploy.uitoolkit.ToolkitStore.dispose;
-import static com.sun.glass.ui.Cursor.setVisible;
 
 /**
  * Created by Ujjawal Gupta on 03-Apr-16.
@@ -20,7 +12,7 @@ public class StartScreen {
     private JButton joinAnExistingGameButton;
     private JPanel startView;
 
-    static JFrame frame = new JFrame("Start Game");
+    static JFrame startframe = new JFrame("Start Game");
 
 
     public StartScreen(){
@@ -29,10 +21,10 @@ public class StartScreen {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    frame.setVisible(false); //you can't see me!
+                    startframe.setVisible(false); //you can't see me!
                     //frame.dispose(); //Destroy the JFrame object
                     JFrame frame = new JFrame("Create Game");
-                    frame.setContentPane(new CreateGame().startview);
+                    frame.setContentPane(new CreateGame(frame).createview);
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.pack();
 
@@ -49,10 +41,10 @@ public class StartScreen {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    frame.setVisible(false); //you can't see me!
+                    startframe.setVisible(false); //you can't see me!
                     //frame.dispose(); //Destroy the JFrame object
                     JFrame frame = new JFrame("Join Game");
-                    frame.setContentPane(new JoinGame().joinview);
+                    frame.setContentPane(new JoinGame(frame).joinview);
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.pack();
 
@@ -68,13 +60,11 @@ public class StartScreen {
     }
 
     public static void main(String arg[]) {
-        frame.setContentPane(new StartScreen().startView);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-
-        frame.setSize(500,200);
-        frame.setVisible(true);
-
-    }
+       startframe.setContentPane(new StartScreen().startView);
+       startframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       startframe.pack();
+       startframe.setSize(500,200);
+       startframe.setVisible(true);
+   }
 
 }

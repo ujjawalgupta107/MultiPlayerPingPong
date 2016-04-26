@@ -106,6 +106,11 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
     private int playerTwoScore = 0;
     private int playerThreeScore = 0;
     private int playerFourScore = 0;
+
+    private int playerOneP   =0;
+    private int playerTwoP=0;
+    private int playerThreeP=0;
+    private int playerFourP=0;
     //</editor-fold>
 
     //<editor-fold desc="variables for miss and hit">
@@ -132,8 +137,8 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         for(int i = 0 ; i<ballX.length ; i++) {
             ballX[i] = boardX / 2 - 7;            //has to be changed by ujjwal
             ballY[i] = boardY / 2 - 7;            //has to be changed by ujjwal
-            ballDeltaX[i] = BallDeltaXArray[i] ;
-            ballDeltaY[i] = BallDeltaYArray[i] ;
+            ballDeltaX[i] =0;// BallDeltaXArray[i] ;
+            ballDeltaY[i] =0;// BallDeltaYArray[i] ;
         }
 
         //listen to key presses
@@ -297,13 +302,20 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         }
         movePaddles();
         if (time > 150 & n == 4) {
+            ballCollision(4, 4);
+        }
+        if (time <= 150 & time > 100 & n == 3) {
             ballCollision(3, 3);
         }
-        if (time <= 150 & time > 100 & n >= 3) {
+        if (time <= 100 & time > 50 & n >= 2) {
             ballCollision(2, 2);
         }
-        if (time <= 100 & time > 50 & n >= 2) {
-            ballCollision(1, 1);
+
+        if (time > 100 & n == 2) {
+            ballCollision(2, 2);
+        }
+        if (time > 150 & n == 3) {
+            ballCollision(3, 3);
         }
 
 
@@ -324,6 +336,7 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
             if (nextBallBottom[i] >= (boardY - 35)) {
                 if (nextBallLeft[i] >= playerFourRight || nextBallRight[i] <= playerFourLeft) {
                     ballDeltaY[i] *= -1;
+                    playerFourP++;
                     playerFourMiss = 5;
                 } else {
                     playerFourHit = 10;
@@ -465,11 +478,20 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         //</editor-fold>
 
         //draw the scores
-        g.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
-        g.drawString("player 1: "+ String.valueOf(playerOneScore), 100, 100);
-        g.drawString("player 2: "+String.valueOf(playerTwoScore), 300, 100);
-        g.drawString("player 3: "+String.valueOf(playerThreeScore), 100, 150);
-        g.drawString("player 4: "+String.valueOf(playerFourScore), 300, 150);
+
+        g.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+        g.drawString("SCORE ", boardX/2+2, boardY/2-25);
+        g.drawString("P1: "+ String.valueOf(playerOneScore), boardX/2-100, boardY/2-5);
+        g.drawString("P2: "+ String.valueOf(playerTwoScore), boardX/2-50, boardY/2-5);
+        g.drawString("P3: "+ String.valueOf(playerThreeScore), boardX/2+10, boardY/2-5);
+        g.drawString("P4: "+ String.valueOf(playerFourScore), boardX/2+60, boardY/2-5);
+
+        g.drawString("FOULS ", boardX/2+2, boardY/2+50);
+        g.drawString("P1: "+ String.valueOf(playerOneP), boardX/2-100, boardY/2+25);
+        g.drawString("P2: "+ String.valueOf(playerTwoP), boardX/2-50, boardY/2+25);
+        g.drawString("P3: "+ String.valueOf(playerThreeP), boardX/2+10, boardY/2+25);
+        g.drawString("P4: "+ String.valueOf(playerFourP), boardX/2+60, boardY/2+25);
+
 
 
         //<editor-fold desc="draw coloer paddles">

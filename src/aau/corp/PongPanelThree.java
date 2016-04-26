@@ -108,6 +108,11 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     private int playerTwoScore = 0;
     private int playerThreeScore = 0;
     private int playerFourScore = 0;
+
+    private int playerOneP   =0;
+    private int playerTwoP=0;
+    private int playerThreeP=0;
+    private int playerFourP=0;
     //</editor-fold>
 
     //<editor-fold desc="variables for miss and hit">
@@ -136,8 +141,8 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         for(int i = 0 ; i<ballX.length ; i++) {
             ballX[i] = boardX / 2 - 7;            //has to be changed by ujjwal
             ballY[i] = boardY / 2 - 7;            //has to be changed by ujjwal
-            ballDeltaX[i] = BallDeltaXArray[i] ;
-            ballDeltaY[i] = BallDeltaYArray[i] ;
+            ballDeltaX[i] = 0;//BallDeltaXArray[i] ;
+            ballDeltaY[i] = 0;//BallDeltaYArray[i] ;
         }
 
         //listen to key presses
@@ -247,9 +252,7 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
                         playerFourHit = 0;
                         playerFourMiss = 0;
                         playerFourScore = 0;
-
                     }
-
                 }
                 //  System.out.println("REC: " + new String(receivePacket.getData()));
 
@@ -263,7 +266,6 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
                 {connection4 = false;}
             }
         }
-
 
         if (time == 0) {
             ballDeltaX[0] = BallDeltaXArray[0];
@@ -303,13 +305,20 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         movePaddles();
 
         if (time > 150 & n == 4) {
+            ballCollision(4, 4);
+        }
+        if (time <= 150 & time > 100 & n == 3) {
             ballCollision(3, 3);
         }
-        if (time <= 150 & time > 100 & n >= 3) {
+        if (time <= 100 & time > 50 & n >= 2) {
             ballCollision(2, 2);
         }
-        if (time <= 100 & time > 50 & n >= 2) {
-            ballCollision(1, 1);
+
+        if (time > 100 & n == 2) {
+            ballCollision(2, 2);
+        }
+        if (time > 150 & n == 3) {
+            ballCollision(3, 3);
         }
         //<editor-fold desc="defining variables for paddle position for each player">
         int playerThreeTop = playerThreeY +playerThreeHeight;
@@ -323,6 +332,7 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
             if (nextBallTop[i] <= 35) {
                 if (nextBallLeft[i] >= playerThreeRight || nextBallRight[i] <= playerThreeLeft) {
                     ballDeltaY[i] *= -1;
+                    playerThreeP++;
                     playerThreeMiss= 5;
                 } else {
                     playerThreeHit = 10;
@@ -469,11 +479,20 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         //</editor-fold>
 
         //draw the scores
-        g.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
-        g.drawString("player 1: "+ String.valueOf(playerOneScore), 100, 100);
-        g.drawString("player 2: "+String.valueOf(playerTwoScore), 300, 100);
-        g.drawString("player 3: "+String.valueOf(playerThreeScore), 100, 150);
-        g.drawString("player 4: "+String.valueOf(playerFourScore), 300, 150);
+
+        g.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+        g.drawString("SCORE ", boardX/2+2, boardY/2-25);
+        g.drawString("P1: "+ String.valueOf(playerOneScore), boardX/2-100, boardY/2-5);
+        g.drawString("P2: "+ String.valueOf(playerTwoScore), boardX/2-50, boardY/2-5);
+        g.drawString("P3: "+ String.valueOf(playerThreeScore), boardX/2+10, boardY/2-5);
+        g.drawString("P4: "+ String.valueOf(playerFourScore), boardX/2+60, boardY/2-5);
+
+        g.drawString("FOULS ", boardX/2+2, boardY/2+50);
+        g.drawString("P1: "+ String.valueOf(playerOneP), boardX/2-100, boardY/2+25);
+        g.drawString("P2: "+ String.valueOf(playerTwoP), boardX/2-50, boardY/2+25);
+        g.drawString("P3: "+ String.valueOf(playerThreeP), boardX/2+10, boardY/2+25);
+        g.drawString("P4: "+ String.valueOf(playerFourP), boardX/2+60, boardY/2+25);
+
 
 
         //<editor-fold desc="draw coloer paddles">

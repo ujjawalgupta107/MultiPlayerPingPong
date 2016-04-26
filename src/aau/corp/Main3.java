@@ -28,7 +28,7 @@ public class Main3 {
 
     public static void main(String arg[]) throws IOException {
 
-        Main m = new Main(7071);
+        Main3 m3 = new Main3();
     }
 }
 
