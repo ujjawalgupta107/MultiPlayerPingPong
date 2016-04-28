@@ -205,12 +205,12 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener {
 
     private void step() {
 
-        track2 = track2 + 1;
+        track2 ++;
         if (track2 == t) {
-            System.out.print("ewfeqd");
-           // movePlayerTwo();
+            track2 =0;
+            movePlayerTwo();
         }
-        movePlayerTwo();
+
 
 
         if (time == 0) {

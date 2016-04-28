@@ -248,6 +248,11 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
 
     public void step()throws IOException{
 
+        if(playerTwoP>=limit){isPlayerTwoActive=true;}
+        if(playerOneP>=limit){isPlayerOneActive=true;}
+        if(playerFourP>=limit){isPlayerFourActive=true;}
+
+
         int a=0;
         int b=0;
         int c=0;
