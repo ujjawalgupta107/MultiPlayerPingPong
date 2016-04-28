@@ -3,6 +3,7 @@ package aau.corp;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.net.InetAddress;
 
 
 /**
@@ -12,7 +13,6 @@ public class JoinGame {
     public JPanel joinview;
     private JButton joinGameButton;
     private JTextField textField1;
-    private JButton a1Button;
     private JButton a2Button;
     private JButton a3Button;
     private JButton a4Button;
@@ -34,13 +34,7 @@ public class JoinGame {
             }
         });
 
-        a1Button.setAction(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                answer_player.setText("1");
-                player_number=1;
-            }
-        });
+
         a2Button.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -67,7 +61,39 @@ public class JoinGame {
     private static void submit(JTextField textField1) throws IOException {
 
         System.out.println("address "+ textField1.getText());
-        Main m = new Main(Integer.parseInt(textField1.getText()),player_number);//send the address of the host and port
+
+        Thread t1 = new Thread(){
+            public void run(){
+                try {
+                    Main m1 = new Main(7071,player_number, (textField1.getText()));//send the address of the host and port
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        t1.start();
+
+        Thread t2 = new Thread(){
+            public void run(){
+                try {
+                    Main m1 = new Main(7072,player_number, (textField1.getText()));//send the address of the host and port
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        t2.start();
+        Thread t3 = new Thread(){
+            public void run(){
+                try {
+                    Main m1 = new Main(7073,player_number, (textField1.getText()));//send the address of the host and port
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        t3.start();
+
     }
 
     public static void main(String[] arg) {

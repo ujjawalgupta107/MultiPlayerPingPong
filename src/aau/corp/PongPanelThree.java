@@ -24,20 +24,26 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     boolean connection1=true;
     boolean connection2 = true;
     boolean connection4 = true;
-
+    int doit1=0,doit2=0,doit4=0;
 
     int local_port_number;
     InetAddress[] second_ip;
     int[] second_port;
     DatagramSocket clientsocket = new DatagramSocket();
 
+
+    boolean isPlayerOneActive = true;
+    boolean isPlayerTwoActive = true;
+    boolean isPlayerThreeActive = true;
+    boolean isPlayerFourActive = true;
+    int size =300;
     int startRate = 20;        //frame refreshes after every 100 millisecond
-    Timer timer ;
+    Timer timer;
     int track2 = 0;
-    int boardX = 300;
-    int boardY = 300;
-    int paddle = 50;
-    private int paddleSpeed = 2;
+    int boardX = size;
+    int boardY = size;
+    int paddle = size/6;
+    private int paddleSpeed = paddle/3;
     int time = 0;
 
     int n = 2;  //number of balls
@@ -156,7 +162,7 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         timer = new Timer(startRate, this);
         timer.start();
         clientsocket = new DatagramSocket(local_port_number);
-        clientsocket.setSoTimeout(5000);
+        clientsocket.setSoTimeout(1000);
         String information = playerThreeX + "-" + playerThreeHit + "-" + playerThreeMiss + "-" + playerThreeScore + "-" + "3"+"-";
 
 
@@ -184,8 +190,10 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         track2 = track2 +1;
         if(track2==t){
             track2 =0;
-            //move the paddle of player one automatically
-            //movePlayerOne();
+            if(!isPlayerOneActive){movePlayerOne();}
+            if(!isPlayerTwoActive){movePlayerTwo();}
+            if(!isPlayerThreeActive){movePlayerThree();}
+            if(!isPlayerFourActive){movePlayerFour();}
         }
     }
 
@@ -195,13 +203,17 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         int b=0;
         int c=0;
 
+        int x=0,y=0,z=0;
+        if(!connection1){x=1;}
+        if (!connection2){y=1;}
+        if (!connection4){z=1;}
+
         //////////////////////////////////////
 
-        for(int j=0;j<second_ip.length;j++)
-        {
-            try {
-                if (connection1 == true || connection2 == true || connection4 ==true)
-                {
+        System.out.println(second_ip.length-x-y-z);
+        if (second_ip.length-x-y-z>0) {
+            for (int j = 0; j < (second_ip.length - x - y - z); j++) {
+                try {
                     DatagramPacket receivePacket = new DatagramPacket(new byte[1024], 1024);
                     clientsocket.receive(receivePacket);
                     String response = new String(receivePacket.getData());
@@ -212,59 +224,97 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
                         playerOneHit = Integer.parseInt(splitResponse[1]);
                         playerOneMiss = Integer.parseInt(splitResponse[2]);
                         playerOneScore = Integer.parseInt(splitResponse[3]);
-                        a=1;
+                        a = 1;
                     } else if (Integer.parseInt(splitResponse[4]) == 2) {
                         playerTwoY = Integer.parseInt(splitResponse[0]);
                         playerTwoHit = Integer.parseInt(splitResponse[1]);
                         playerTwoMiss = Integer.parseInt(splitResponse[2]);
                         playerTwoScore = Integer.parseInt(splitResponse[3]);
-                        b=1;
+                        b = 1;
                     } else if (Integer.parseInt(splitResponse[4]) == 4) {
                         playerFourX = Integer.parseInt(splitResponse[0]);
                         playerFourHit = Integer.parseInt(splitResponse[1]);
                         playerFourMiss = Integer.parseInt(splitResponse[2]);
                         playerFourScore = Integer.parseInt(splitResponse[3]);
-                        c=1;
+                        c = 1;
+                    }
+
+
+                    //  System.out.println("REC: " + new String(receivePacket.getData()));
+
+                } catch (Exception e) {
+                    System.out.println("SERVER TIMED OUT");
+                    if (a == 0) {
+                        doit1++;
+                        if(doit1>9) {
+                            if(connection1==true){
+                                connection1 = false;
+                                System.out.println("connection 1 gone");
+                                doit2=0;
+                                doit4=0;}
+                        }
+                    }
+                    else if (a==1){
+                        connection1=true;
+                    }
+                    if (b == 0) {
+                        doit2++;
+                        if(doit2>9) {
+                            if(connection2==true){
+                                connection2 = false;
+                                System.out.println("connection 2 gone");
+                                doit4=0;
+                                doit1=0;}
+                        }
+                    }
+                    else if (b==1){
+                        connection2=true;
+                    }
+                    if (second_ip.length>2) {
+                        if (c == 0) {
+                            doit4++;
+                            if(doit4>9) {
+                                if(connection4==true){
+                                    connection4 = false;
+                                    System.out.println("connection 4 gone");
+                                    doit1=0;
+                                    doit2=0;}
+                            }
+                        } else if (c == 1) {
+                            connection4 = true;
+                        }
                     }
                 }
-
-                if(a*b*c==0)
-                {
-                    if(a==0)
-                    {
-                        //playerOneY = boardY / 2 - paddle / 2;
-                        playerOneHit = 0;
-                        playerOneMiss = 0;
-                        //playerOneScore = 0;
-                    }
-
-                    if (b==0)
-                    {
-                        //playerTwoY = boardY / 2 - paddle / 2;
-                        playerTwoHit = 0;
-                        playerTwoMiss = 0;
-                        //playerTwoScore = 0;
-                    }
-
-                    if (c==0)
-                    {
-                        //playerFourX = boardY / 2 - paddle / 2;
-                        playerFourHit = 0;
-                        playerFourMiss = 0;
-                        //playerFourScore = 0;
-                    }
-                }
-                //  System.out.println("REC: " + new String(receivePacket.getData()));
-
-            } catch (Exception e) {
-                System.out.println("SERVER TIMED OUT");
-                if (a==0)
-                {connection1 = false;}
-                if(b==0)
-                {connection2 = false;}
-                if(c==0)
-                {connection4 = false;}
             }
+        }
+
+        if(a*b*c==0)
+        {
+            if(a==0)
+            {
+                isPlayerOneActive= false;
+                playerOneHit = 0;
+                playerOneMiss = 0;
+                //  playerOneScore = 0;
+            }
+
+            if (b==0)
+            {
+                isPlayerTwoActive= false;
+                playerTwoHit = 0;
+                playerTwoMiss = 0;
+                //   playerTwoScore = 0;
+            }
+
+            if (c==0)
+            {
+                isPlayerFourActive= false;
+                playerFourHit = 0;
+                playerFourMiss = 0;
+                //   playerFourScore = 0;
+
+            }
+
         }
 
         if (time == 0) {
@@ -391,26 +441,6 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         }
     }
 
-    //AI for playerOne
-    public void movePlayerOne(){
-
-        int paddleSpeed = p;                                //ability of the computer player depends on the paddle speed of the computer player
-        int playerMiddleY = playerOneY+playerOneHeight/2;   //middle of the paddle of player one
-        //ball moving in opposite direction and will not hit the goal of player one
-
-
-        if ((playerMiddleY - ballY[1] <= -(paddle / (2 * r))) || (2 < 0)) {
-            if (playerOneY + paddleSpeed + playerOneHeight <= (boardY - 35)) {
-                playerOneY += paddleSpeed;
-            }
-        }
-        if ((playerMiddleY - ballY[1] >= (paddle / (2 * r))) || (2 < 0)) {
-            if (playerOneY - paddleSpeed >= 35) {
-                playerOneY -= paddleSpeed;
-            }
-        }
-    }
-
     //paint the game screen
     public void paintComponent(Graphics g ){
 
@@ -493,7 +523,19 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         g.drawString("P3: "+ String.valueOf(playerThreeP), boardX/2+10, boardY/2+25);
         g.drawString("P4: "+ String.valueOf(playerFourP), boardX/2+60, boardY/2+25);
 
+        if(doit1>2 && doit1<8)
+        {g.drawString("WAITING FOR PLAYER1",100,50);}
+        else if(doit2>2 && doit2<8)
+        {g.drawString("WAITING FOR PLAYER2",100,50);}
+        else if(doit4>2 && doit4<8)
+        {g.drawString("WAITING FOR PLAYER4",100,50);}
 
+        if(doit2>7 && doit2<10 )
+        {g.drawString("PLAYER2 DISCONNECTS",100,50);}
+        else if(doit1>7 && doit1<10 )
+        {g.drawString("PLAYER1 DISCONNECTS",100,50);}
+        else if(doit4>7 && doit4<10 )
+        {g.drawString("PLAYER4 DISCONNECTS",100,50);}
 
         //<editor-fold desc="draw coloer paddles">
         //draw the paddles
@@ -584,5 +626,193 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
                 }
             }
         }
+    }
+    //AI for playerOne
+    public void movePlayerOne(){
+
+        int paddleSpeed = p;                                //ability of the computer player depends on the paddle speed of the computer player
+        int playerMiddleY = playerOneY+playerOneHeight/2;   //middle of the paddle of player one
+        //ball moving in opposite direction and will not hit the goal of player one
+
+        int  i = findMinXIndex();
+
+        if ((playerMiddleY - ballY[i] <= -(paddle / (2 * r))) || (2 < 0)) {
+            if (playerOneY + paddleSpeed + playerOneHeight <= (boardY - 35)) {
+                playerOneY += paddleSpeed;
+            }
+        }
+        if ((playerMiddleY - ballY[i] >= (paddle / (2 * r))) || (2 < 0)) {
+            if (playerOneY - paddleSpeed >= 35) {
+                playerOneY -= paddleSpeed;
+            }
+        }
+    }
+
+    //AI for playerTwo
+    public void movePlayerTwo(){
+
+        int paddleSpeed = p;                                //ability of the computer player depends on the paddle speed of the computer player
+        int playerMiddleY = playerTwoY+playerTwoHeight/2;   //middle of the paddle of player one
+        //ball moving in opposite direction and will not hit the goal of player one
+
+        int  i = findMaxXIndex();
+
+        if ((playerMiddleY - ballY[i] <= -(paddle / (2 * r))) ) {
+            if (playerTwoY + paddleSpeed + playerTwoHeight <= (boardY - 35)) {
+                playerTwoY += paddleSpeed;
+            }
+        }
+        if ((playerMiddleY - ballY[i] >= (paddle / (2 * r)))) {
+            if (playerTwoY - paddleSpeed >= 35) {
+                playerTwoY -= paddleSpeed;
+            }
+        }
+    }
+
+    //AI for playerThree
+    public void movePlayerThree(){
+
+        int paddleSpeed = p;                                //ability of the computer player depends on the paddle speed of the computer player
+        int playerMiddleX = playerThreeX+playerThreeWidth/2;   //middle of the paddle of player one
+        //ball moving in opposite direction and will not hit the goal of player one
+
+        int  i = findMinYIndex();
+
+        if ((ballX[i] - playerMiddleX >= (paddle / (2 * r))) ) {
+            if (playerThreeX + paddleSpeed + playerThreeWidth <= (boardX - 35)) {
+                playerThreeX += paddleSpeed;
+            }
+        }
+        if ((playerMiddleX - ballX[i] >= (paddle / (2 * r))) ) {
+            if (playerThreeX - paddleSpeed >= 35) {
+                playerThreeX-= paddleSpeed;
+            }
+        }
+    }
+
+    //AI for playerFour
+    public void movePlayerFour(){
+
+        int paddleSpeed = p;                                //ability of the computer player depends on the paddle speed of the computer player
+        int playerMiddleX = playerFourX+playerFourWidth/2;   //middle of the paddle of player one
+        //ball moving in opposite direction and will not hit the goal of player one
+
+        int  i = findMaxYIndex();
+
+        if ((ballX[i] - playerMiddleX >= (paddle / (2 * r))) ) {
+            if (playerFourX + paddleSpeed + playerFourWidth <= (boardX - 35)) {
+                playerFourX += paddleSpeed;
+            }
+        }
+        if ((playerMiddleX - ballX[i] >= (paddle / (2 * r))) ) {
+            if (playerFourX - paddleSpeed >= 35) {
+                playerFourX-= paddleSpeed;
+            }
+        }
+    }
+    //find index of minimum value of ballX according to ballDeltaX
+    //gives the index of the ball that the player one has to hit
+    public int findMinXIndex(){
+        int[] arr = ballX;
+        int index = -1;
+        int value = 10000;
+        for(int i = 0 ; i<arr.length ; i++){
+            if(ballDeltaX[i] <0 & value >= arr[i]){
+                index = i;
+                value = arr[i];
+            }
+        }
+        if(index == -1) {
+            index = 0;
+            value = arr[0];
+            for(int i = 0 ; i<arr.length ; i++){
+                if(value <= arr[i]){
+                    index = i;
+                    value = arr[i];
+                }
+            }
+        }
+        System.out.println(index);
+        return index;
+    }
+
+
+    //find index of max value of ballX according to ballDeltaX
+    //gives the index of the ball that the player two has to hit
+    public int findMaxXIndex(){
+        int[] arr = ballX;
+        int index = -1;
+        int value = -1;
+        for(int i = 0 ; i<arr.length ; i++){
+            if(ballDeltaX[i] >0 & value <= arr[i] ){
+                index = i;
+                value = arr[i];
+            }
+        }
+        if(index == -1) {
+            index = 0;
+            value = arr[0];
+            for(int i = 0 ; i<arr.length ; i++){
+                if(value >= arr[i]){
+                    index = i;
+                    value = arr[i];
+                }
+            }
+        }
+        System.out.println(index);
+        return index;
+    }
+
+    //find index of minimum value of ballY according to ballDeltaY
+    //gives the index of ball that player 3 has to hit
+    public int findMinYIndex(){
+        int[] arr = ballY;
+        int index = -1;
+        int value = 1000;
+        for(int i = 0 ; i<arr.length ; i++){
+            if(ballDeltaY[i] <0  & value>arr[i]){
+                index = i;
+                value = arr[i];
+            }
+        }
+        if(index == -1) {
+            index = 0;
+            value = arr[0];
+            for(int i = 0 ; i<arr.length ; i++){
+                if(value > arr[i]){
+                    index = i;
+                    value = arr[i];
+                }
+            }
+        }
+        System.out.println(index);
+        return index;
+    }
+
+
+    //find index of minimum value of ballY according to ballDeltaY
+    //gives the index of ball that player 3 has to hit
+    public int findMaxYIndex(){
+        int[] arr = ballY;
+        int index = -1;
+        int value = 1000;
+        for(int i = 0 ; i<arr.length ; i++){
+            if(ballDeltaY[i] >0  & value<arr[i]){
+                index = i;
+                value = arr[i];
+            }
+        }
+        if(index == -1) {
+            index = 0;
+            value = arr[0];
+            for(int i = 0 ; i<arr.length ; i++){
+                if(value < arr[i]){
+                    index = i;
+                    value = arr[i];
+                }
+            }
+        }
+        System.out.println(index);
+        return index;
     }
 }

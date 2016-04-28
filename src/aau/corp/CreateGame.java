@@ -78,7 +78,8 @@ public class CreateGame extends Panel{
             Thread t1 = new Thread(){
                 public void run(){
                     try {
-                        Main m = new Main(7070); //send PlayerType,  BallNumber+1, grid,  aiC
+                        InetAddress ip = InetAddress.getLocalHost();
+                        Main m = new Main(7070, player_number_input, ip.getHostAddress()); //send PlayerType,  BallNumber+1, grid,  aiC
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -153,7 +154,8 @@ public class CreateGame extends Panel{
             Thread t1 = new Thread(){
                 public void run(){
                     try {
-                        Main m = new Main(7070); //send PlayerType,  BallNumber+1, grid,  aiC
+                        InetAddress ip = InetAddress.getLocalHost();
+                        Main m = new Main(7070,player_number_input,ip.getHostAddress()); //send PlayerType,  BallNumber+1, grid,  aiC
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -255,7 +257,8 @@ public class CreateGame extends Panel{
             Thread t1 = new Thread(){
                 public void run(){
                     try {
-                        Main m = new Main(7070); //send PlayerType,  BallNumber+1, grid,  aiC
+                        InetAddress ip = InetAddress.getLocalHost();
+                        Main m = new Main(7070,player_number_input,ip.getHostAddress()); //send PlayerType,  BallNumber+1, grid,  aiC
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
