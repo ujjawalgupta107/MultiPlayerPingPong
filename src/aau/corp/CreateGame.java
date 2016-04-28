@@ -16,10 +16,15 @@ public class CreateGame extends Panel{
     private JComboBox aiC;
     public JPanel createview;
     private JButton createGameButton;
+    private JTextField textField1;
+    private JTextField textField2;
+    private JComboBox comboBox1;
 
     static JFrame framep = new JFrame("Create Game");
 
     static String data;
+    static String limit;
+    static String level;
 
     public CreateGame(JFrame frame){
 
@@ -27,7 +32,7 @@ public class CreateGame extends Panel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    submit(playerTpeC, BallNumberC, GridC);
+                    submit(playerTpeC, BallNumberC, GridC, textField1, textField2,comboBox1);
                     frame.dispose();
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -38,10 +43,12 @@ public class CreateGame extends Panel{
         });
     }
 
-    private void submit(JComboBox playerTpeC, JComboBox BallNumberC, JComboBox GridC) throws Exception {
+    private void submit(JComboBox playerTpeC, JComboBox BallNumberC, JComboBox GridC, JTextField textField1,JTextField textField2, JComboBox comboBox1) throws Exception {
         System.out.println("PlayerType "+ playerTpeC.getSelectedIndex());
         System.out.println("BallNumber "+ BallNumberC.getSelectedIndex());
         System.out.println("GridC "+ GridC.getSelectedIndex());
+
+        String ip_address  = textField1.getText();
 
         int grid =0;
         if(GridC.getSelectedIndex()==0){grid = 300;}
@@ -51,17 +58,32 @@ public class CreateGame extends Panel{
         int no_of_players = 2;
         if(playerTpeC.getSelectedIndex()==0){no_of_players=4;}
         if(playerTpeC.getSelectedIndex()==1){no_of_players=3;}
-        if(playerTpeC.getSelectedIndex()==2){no_of_players=3;}
-        if(playerTpeC.getSelectedIndex()==3){no_of_players=2;}
+        if(playerTpeC.getSelectedIndex()==2){no_of_players=2;}
+        if(playerTpeC.getSelectedIndex()==3){no_of_players=1;}
+
+        int aiLevel = comboBox1.getSelectedIndex() +1;
+
+        String lim = (textField2.getText());
 
         int number_of_balls = BallNumberC.getSelectedIndex()+1;
 
         data = grid +"-" + number_of_balls + "-";
+        limit = lim + "-";
+        level = aiLevel +"-";
 
-        network(no_of_players);
+        if(no_of_players==1){
+            JFrame frame = new JFrame("Ping Pong");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLayout(new BorderLayout());
+            PongPanel pong = new PongPanel(grid,number_of_balls,aiLevel);
+            frame.add(pong,BorderLayout.CENTER);
+            frame.setSize(1000,1000);
+            frame.setVisible(true);
+        }
+        if(no_of_players!=1){network(no_of_players, ip_address);}
     }
 
-    public static void network(int player_number_input) throws Exception {
+    public static void network(int player_number_input, String ip_address) throws Exception {
 
         // Waiting for Connection of Client1 on Port 7070
         // ////////////////////////////////////////////////
@@ -78,8 +100,7 @@ public class CreateGame extends Panel{
             Thread t1 = new Thread(){
                 public void run(){
                     try {
-                        InetAddress ip = InetAddress.getLocalHost();
-                        Main m = new Main(7070, player_number_input, ip.getHostAddress()); //send PlayerType,  BallNumber+1, grid,  aiC
+                        Main m = new Main(7070, player_number_input,ip_address); //send PlayerType,  BallNumber+1, grid,  aiC
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -127,8 +148,8 @@ public class CreateGame extends Panel{
             String toClient1 = "";
             String toClient2 = "";
 
-            toClient1 = msgInfoOfClient2 + data;
-            toClient2 = msgInfoOfClient1 + data;
+            toClient1 = msgInfoOfClient2 + data +limit + level;
+            toClient2 = msgInfoOfClient1 + data + limit +level;
 
             // Send Information  to Client1
             serverSocket1.send(new DatagramPacket(toClient1.getBytes(),
@@ -224,9 +245,9 @@ public class CreateGame extends Panel{
             String toClient3 = "";
             String toClient4 = "";
 
-            toClient1 = msgInfoOfClient2 + msgInfoOfClient3 + data;
-            toClient2 = msgInfoOfClient1 + msgInfoOfClient3 + data;
-            toClient3 = msgInfoOfClient1 + msgInfoOfClient2 + data;
+            toClient1 = msgInfoOfClient2 + msgInfoOfClient3 + data +limit +level;
+            toClient2 = msgInfoOfClient1 + msgInfoOfClient3 + data +limit +level;
+            toClient3 = msgInfoOfClient1 + msgInfoOfClient2 + data +limit+level;
 
 
             // Send Information  to Client1
@@ -345,10 +366,10 @@ public class CreateGame extends Panel{
             String toClient3 = "";
             String toClient4 = "";
 
-            toClient1 = msgInfoOfClient2 + msgInfoOfClient3 + msgInfoOfClient4 + data;
-            toClient2 = msgInfoOfClient3 + msgInfoOfClient4 + msgInfoOfClient1 + data;
-            toClient3 = msgInfoOfClient4 + msgInfoOfClient1 + msgInfoOfClient2 + data;
-            toClient4 = msgInfoOfClient1 + msgInfoOfClient2 + msgInfoOfClient3 + data;
+            toClient1 = msgInfoOfClient2 + msgInfoOfClient3 + msgInfoOfClient4 + data +limit +level;
+            toClient2 = msgInfoOfClient3 + msgInfoOfClient4 + msgInfoOfClient1 + data +limit +level;
+            toClient3 = msgInfoOfClient4 + msgInfoOfClient1 + msgInfoOfClient2 + data +limit +level;
+            toClient4 = msgInfoOfClient1 + msgInfoOfClient2 + msgInfoOfClient3 + data +limit +level;
 
 
             // Send Information  to Client1

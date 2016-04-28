@@ -34,7 +34,6 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
     boolean isPlayerThreeActive = true;
     boolean isPlayerFourActive = true;
     int size; //= 300;
-    int startRate = 20;        //frame refreshes after every 100 millisecond
     Timer timer;
     int track2 = 0;
     int boardX;
@@ -42,21 +41,20 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
     int paddle;
     private int paddleSpeed;
     int time = 0;
-    int limit = 5;
+    int limit;// = 5;
+    int no_of_players ;
     int n; //= 2;  //number of balls
-    int r = 1;  //ration of the paddle length
-    int p = 5;  //paddle speed
-    int t = 2;  //time ratio
+    int r;  //ration of the paddle length
+    int p;  //paddle speed
+    int t;  //time ratio
+    int speed_increase_time =0;
+    int startRate = 20;        //frame refreshes after every 100 millisecond
+
 
     //<editor-fold desc="boolean variable for keyPressed">
     private boolean upPressed = false;
     private boolean downPressed = false;
     //</editor-fold>
-
-    //y direction --> down +ve
-    // y = 0 --> top point
-    //y direction ---> up   -ve
-    //y =500 ---> bottom most point
 
     private int[] ballX;
     private int[] ballY;
@@ -131,8 +129,10 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
     //</editor-fold>
 
     //construct a PongPanel
-    public PongPanelOne(int localport, InetAddress[] ip, int[] port, int grid, int balls) throws IOException {
+    public PongPanelOne(int localport, InetAddress[] ip, int[] port, int grid, int balls, int limit_miss,int no_of_players_input, int aiLevel) throws IOException {
+        //<editor-fold desc="variables">
         setBackground(Color.BLACK);
+        no_of_players = no_of_players_input;
         local_port_number = localport;
         second_ip = new InetAddress[ip.length];
         second_port = new int[port.length];
@@ -140,7 +140,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
         second_port = port;
         n = balls;
         size = grid;
-        limit = 5;
+        limit = limit_miss;
         boardX = size;
         boardY = size;
         paddle = size / 6;
@@ -172,6 +172,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
         playerFourY = boardY - 25 - 10;
         playerFourWidth = paddle;
         playerFourHeight = 10;
+        //</editor-fold>
 
         for (int i = 0; i < ballX.length; i++) {
             ballX[i] = boardX / 2 - 7;            //has to be changed by ujjwal
@@ -184,17 +185,27 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
         setFocusable(true);
         addKeyListener(this);
 
-        //call step() 60 fps
-        //increasing the value makes the game slower
-        //reducing the value makes the game go faster
-        //      startTimer(startRate);
         timer = new Timer(startRate, this);
         timer.start();
         clientsocket = new DatagramSocket(local_port_number);
         clientsocket.setSoTimeout(1000);
         String info = playerOneY + "-" + playerOneHit + "-" + playerOneMiss + "-" + playerOneScore + "-" + "1" + "-" + playerOneP + "-";
 
-
+        if(aiLevel==1){
+            r = 1;  //ration of the paddle length
+            p = paddle/10;  //paddle speed
+            t = 3;  //time ratio
+        }
+        if(aiLevel==2){
+            r = 1;  //ration of the paddle length
+            p = paddle/20;  //paddle speed
+            t = 5;  //time ratio
+        }
+        if(aiLevel==3){
+            r = 2;  //ration of the paddle length
+            p = paddle/25;  //paddle speed
+            t = 8;  //time ratio
+        }
         for (int i = 0; i < second_ip.length; i++) {
             byte[] senddata = info.getBytes();
             DatagramPacket sendpack = new DatagramPacket(senddata, senddata.length, second_ip[i], second_port[i]);
@@ -207,13 +218,21 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
     }
 
     public void actionPerformed(ActionEvent e) {
-        try {
-            step();
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        try {step();}
+        catch (IOException e1) {e1.printStackTrace();}
 
+        speed_increase_time ++;
+
+        if(speed_increase_time> 10000/startRate){
+            speed_increase_time = 0;
+            if (startRate>=10) {
+                timer.stop();
+                startRate --;
+                timer = new Timer(startRate, this);
+                timer.start();
+            }
         }
+
         //will control the reaction rate of the computer player
         track2 = track2 + 1;
         if (track2 == t) {
@@ -228,9 +247,6 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
             }
             if (!isPlayerFourActive) {
                 movePlayerFour();
-            }
-            if (!connection2) {
-                //moveplayerTwo()
             }
         }
     }
@@ -561,6 +577,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
         int playerThreeDown = playerThreeY + playerThreeHeight;
         int playerFourUp = playerFourY;
 
+        g.setColor(Color.WHITE);
         //draw dashed line down center
         for (int lineY = 35; lineY <= boardY - 45; lineY += 10) {
             g.drawLine(boardX / 2, lineY, boardX / 2, lineY + 5);
@@ -626,63 +643,69 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
         g.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
         g.drawString("SCORE ", boardX / 2 + 2, boardY / 2 - 25);
         g.drawString("P1: " + String.valueOf(playerOneScore), boardX / 2 - 100, boardY / 2 - 5);
-        g.drawString("P2: " + String.valueOf(playerTwoScore), boardX / 2 - 50, boardY / 2 - 5);
-        g.drawString("P3: " + String.valueOf(playerThreeScore), boardX / 2 + 10, boardY / 2 - 5);
-        g.drawString("P4: " + String.valueOf(playerFourScore), boardX / 2 + 60, boardY / 2 - 5);
+        if(no_of_players>=2){g.drawString("P2: " + String.valueOf(playerTwoScore), boardX / 2 - 50, boardY / 2 - 5);}
+        if(no_of_players>=3){g.drawString("P3: " + String.valueOf(playerThreeScore), boardX / 2 + 10, boardY / 2 - 5);}
+        if(no_of_players==4){g.drawString("P4: " + String.valueOf(playerFourScore), boardX / 2 + 60, boardY / 2 - 5);}
 
         g.drawString("FOULS ", boardX / 2 + 2, boardY / 2 + 50);
         g.drawString("P1: " + String.valueOf(playerOneP), boardX / 2 - 100, boardY / 2 + 25);
-        g.drawString("P2: " + String.valueOf(playerTwoP), boardX / 2 - 50, boardY / 2 + 25);
-        g.drawString("P3: " + String.valueOf(playerThreeP), boardX / 2 + 10, boardY / 2 + 25);
-        g.drawString("P4: " + String.valueOf(playerFourP), boardX / 2 + 60, boardY / 2 + 25);
+        if(no_of_players>=2){g.drawString("P2: " + String.valueOf(playerTwoP), boardX / 2 - 50, boardY / 2 + 25);}
+        if(no_of_players>=3){g.drawString("P3: " + String.valueOf(playerThreeP), boardX / 2 + 10, boardY / 2 + 25);}
+        if(no_of_players==4){g.drawString("P4: " + String.valueOf(playerFourP), boardX / 2 + 60, boardY / 2 + 25);}
 
 
         if (doit2 > 8 && doit2 < 10) {
-            g.drawString("PLAYER2 DISCONNECTS", 100, 50);
+            g.drawString("PLAYER DISCONNECTED", 100, 50);
         } else if (doit3 > 8 && doit3 < 10) {
-            g.drawString("PLAYER3 DISCONNECTS", 100, 50);
+            g.drawString("PLAYER DISCONNECTED", 100, 50);
         } else if (doit4 > 8 && doit4 < 10) {
-            g.drawString("PLAYER4 DISCONNECTS", 100, 50);
+            g.drawString("PLAYER DISCONNECTED", 100, 50);
         }
 
 
         //<editor-fold desc="draw coloer paddles">
         //draw the paddles
         g.setColor(Color.white);
-        if (playerOneHit > 0) {
-            g.setColor(Color.GREEN);
-            g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
-            g.setColor(Color.white);
-        } else if (playerOneHit == 0) {
-            g.setColor(Color.white);
-            g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
+        if(no_of_players>=1) {
+            if (playerOneHit > 0) {
+                g.setColor(Color.GREEN);
+                g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
+                g.setColor(Color.white);
+            } else if (playerOneHit == 0) {
+                g.setColor(Color.white);
+                g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
+            }
         }
-
-        if (playerTwoHit > 0) {
-            g.setColor(Color.GREEN);
-            g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
-            g.setColor(Color.white);
-        } else if (playerTwoHit == 0) {
-            g.setColor(Color.white);
-            g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
+        if (no_of_players >= 2) {
+            if (playerTwoHit > 0) {
+                g.setColor(Color.GREEN);
+                g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
+                g.setColor(Color.white);
+            } else if (playerTwoHit == 0) {
+                g.setColor(Color.white);
+                g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
+            }
         }
+        if (no_of_players >= 3) {
 
-        if (playerThreeHit > 0) {
-            g.setColor(Color.GREEN);
-            g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
-            g.setColor(Color.white);
-        } else if (playerThreeHit == 0) {
-            g.setColor(Color.white);
-            g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
+            if (playerThreeHit > 0) {
+                g.setColor(Color.GREEN);
+                g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
+                g.setColor(Color.white);
+            } else if (playerThreeHit == 0) {
+                g.setColor(Color.white);
+                g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
+            }
         }
-
-        if (playerFourHit > 0) {
-            g.setColor(Color.GREEN);
-            g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
-            g.setColor(Color.white);
-        } else if (playerFourHit == 0) {
-            g.setColor(Color.white);
-            g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
+        if(no_of_players==4) {
+            if (playerFourHit > 0) {
+                g.setColor(Color.GREEN);
+                g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
+                g.setColor(Color.white);
+            } else if (playerFourHit == 0) {
+                g.setColor(Color.white);
+                g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
+            }
         }
         //</editor-fold>
 

@@ -47,6 +47,8 @@ public class Main {
 
             int grid = Integer.parseInt(splitResponse[2]);
             int balls = Integer.parseInt(splitResponse[3]);
+            int  limit = Integer.parseInt(splitResponse[4]);
+            int ailevel=Integer.parseInt(splitResponse[5]);
 
             // output converted Data for check
             System.out.println("IP1: " + ip1 + " PORT1: " + port1);
@@ -63,23 +65,23 @@ public class Main {
             if (connect_port == 7070) {
                 aman.setText("PLAYER 1");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelOne pongPanel = new PongPanelOne(localPort, send_ip, send_port,grid,balls);
+                PongPanelOne pongPanel = new PongPanelOne(localPort, send_ip, send_port,grid,balls,limit,no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
 
             } else if (connect_port == 7071) {
                 aman.setText("PLAYER 2");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelTwo pongPanel = new PongPanelTwo(localPort, send_ip, send_port,grid,balls);
+                PongPanelTwo pongPanel = new PongPanelTwo(localPort, send_ip, send_port,grid,balls,limit,no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
             } else if (connect_port == 7072) {
                 aman.setText("PLAYER 3");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelThree pongPanel = new PongPanelThree(localPort, send_ip, send_port,grid,balls);
+                PongPanelThree pongPanel = new PongPanelThree(localPort, send_ip, send_port,grid,balls,limit, no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
             } else if (connect_port == 7073) {
                 aman.setText("PLAYER 4");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelFour pongPanel = new PongPanelFour(localPort, send_ip, send_port,grid,balls);
+                PongPanelFour pongPanel = new PongPanelFour(localPort, send_ip, send_port,grid,balls,limit, no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
             }
             frame.setSize(400, 400);
@@ -98,6 +100,8 @@ public class Main {
             int[] send_port = {port1, port2};
             int grid = Integer.parseInt(splitResponse[4]);
             int balls = Integer.parseInt(splitResponse[5]);
+            int  limit = Integer.parseInt(splitResponse[6]);
+            int ailevel=Integer.parseInt(splitResponse[7]);
 
             // output converted Data for check
             System.out.println("IP1: " + ip1 + " PORT1: " + port1);
@@ -117,23 +121,23 @@ public class Main {
             if (connect_port == 7070) {
                 aman.setText("PLAYER 1");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelOne pongPanel = new PongPanelOne(localPort, send_ip, send_port,grid,balls);
+                PongPanelOne pongPanel = new PongPanelOne(localPort, send_ip, send_port,grid,balls, limit, no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
 
             } else if (connect_port == 7071) {
                 aman.setText("PLAYER 2");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelTwo pongPanel = new PongPanelTwo(localPort, send_ip, send_port,grid,balls);
+                PongPanelTwo pongPanel = new PongPanelTwo(localPort, send_ip, send_port,grid,balls,limit, no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
             } else if (connect_port == 7072) {
                 aman.setText("PLAYER 3");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelThree pongPanel = new PongPanelThree(localPort, send_ip, send_port,grid,balls);
+                PongPanelThree pongPanel = new PongPanelThree(localPort, send_ip, send_port,grid,balls,limit, no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
             } else if (connect_port == 7073) {
                 aman.setText("PLAYER 4");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelFour pongPanel = new PongPanelFour(localPort, send_ip, send_port,grid,balls);
+                PongPanelFour pongPanel = new PongPanelFour(localPort, send_ip, send_port,grid,balls,limit, no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
             }
 
@@ -155,6 +159,8 @@ public class Main {
             int[] send_port = {port1, port2, port3};
             int grid = Integer.parseInt(splitResponse[6]);
             int balls = Integer.parseInt(splitResponse[7]);
+            int  limit = Integer.parseInt(splitResponse[8]);
+            int ailevel=Integer.parseInt(splitResponse[9]);
 
             // output converted Data for check
             System.out.println("IP1: " + ip1 + " PORT1: " + port1);
@@ -175,23 +181,23 @@ public class Main {
             if (connect_port == 7070) {
                 aman.setText("PLAYER 1");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelOne pongPanel = new PongPanelOne(localPort, send_ip, send_port,grid,balls);
+                PongPanelOne pongPanel = new PongPanelOne(localPort, send_ip, send_port,grid,balls,limit, no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
 
             } else if (connect_port == 7071) {
                 aman.setText("PLAYER 2");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelTwo pongPanel = new PongPanelTwo(localPort, send_ip, send_port,grid,balls);
+                PongPanelTwo pongPanel = new PongPanelTwo(localPort, send_ip, send_port,grid,balls,limit, no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
             } else if (connect_port == 7072) {
                 aman.setText("PLAYER 3");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelThree pongPanel = new PongPanelThree(localPort, send_ip, send_port,grid,balls);
+                PongPanelThree pongPanel = new PongPanelThree(localPort, send_ip, send_port,grid,balls,limit, no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
             } else if (connect_port == 7073) {
                 aman.setText("PLAYER 4");
                 frame.add(aman, BorderLayout.PAGE_START);
-                PongPanelFour pongPanel = new PongPanelFour(localPort, send_ip, send_port,grid,balls);
+                PongPanelFour pongPanel = new PongPanelFour(localPort, send_ip, send_port,grid,balls,limit, no_of_players,ailevel);
                 frame.add(pongPanel, BorderLayout.CENTER);
             }
             frame.setSize(400, 400);

@@ -18,10 +18,10 @@ public class Main3 {
 /*
         PongPanel pongPanel  = new PongPanel();
         frame.add(pongPanel,BorderLayout.CENTER);
-*/
+*//*
         PongPanel pongPanel  = new PongPanel();
         frame.add(pongPanel,BorderLayout.CENTER);
-
+*/
         frame.setSize(1000,1000);
         frame.setVisible(true);
     }
