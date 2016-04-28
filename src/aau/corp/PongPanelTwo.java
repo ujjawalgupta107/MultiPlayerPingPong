@@ -34,8 +34,10 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
     boolean isPlayerThreeActive = true;
     boolean isPlayerFourActive = true;
     int size;// =300;
+    int limit = 5;
     int startRate = 20;        //frame refreshes after every 100 millisecond
     Timer timer;
+
     int track2 = 0;
     int boardX;
     int boardY;
@@ -366,7 +368,6 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
             ballDeltaX[3] = BallDeltaXArray[3];
             ballDeltaY[3] = BallDeltaYArray[3];
         }
-
         if (time <= 200) {
             time++;
         }
@@ -397,7 +398,9 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
             nextBallX[i] = (ballX[i] + ballX[i]) / 2;
             nextBallY[i] = (ballY[i] + ballY[i]) / 2;
         }
-        movePaddles();
+        if(playerTwoP<limit) {
+            movePaddles();
+        }
 
         if (time > 150 & n == 4) {
             ballCollision(4, 4);
@@ -477,14 +480,15 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
             //will the ball go off the right side?
             if (nextBallRight[i] >= playerTwoLeft) {
                 //is it going to miss the paddle?
-                if (nextBallTop[i] >= playerTwoBottom || nextBallBottom[i] <= playerTwoTop) {
-                    ballDeltaX[i] *= -1;
-                    playerTwoP++;
-                    playerTwoMiss = 5;
-                } else {
-                    playerTwoHit = 10;
-                    playerTwoScore++;
-                    ballDeltaX[i] *= -1;
+                ballDeltaX[i] *= -1;
+                if(playerTwoP<limit) {
+                    if (nextBallTop[i] >= playerTwoBottom || nextBallBottom[i] <= playerTwoTop) {
+                        playerTwoP++;
+                        playerTwoMiss = 5;
+                    } else {
+                        playerTwoHit = 10;
+                        playerTwoScore++;
+                    }
                 }
             }
 

@@ -45,7 +45,7 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     int paddle ;
     private int paddleSpeed ;
     int time = 0;
-
+    int limit =5;
     int n;// = 2;  //number of balls
     int r = 1;  //ration of the paddle length
     int p = 5;  //paddle speed
@@ -55,11 +55,6 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     private boolean rightPressed = false;
     private boolean leftPressed = false;
     //</editor-fold>
-
-    //y direction --> down +ve
-    // y = 0 --> top point
-    //y direction ---> up   -ve
-    //y =500 ---> bottom most point
 
     private int[] ballX ;
     private int[] ballY ;
@@ -391,8 +386,9 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
             nextBallX[i]         = (ballX[i] + ballX[i])/2;
             nextBallY[i]         = (ballY[i] + ballY[i])/2;
         }
-        movePaddles();
-
+        if(playerThreeP<limit) {
+            movePaddles();
+        }
         if (time > 150 & n == 4) {
             ballCollision(4, 4);
         }
@@ -428,14 +424,15 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
 
             //will the ball go over the top
             if (nextBallTop[i] <= 35) {
-                if (nextBallLeft[i] >= playerThreeRight || nextBallRight[i] <= playerThreeLeft) {
-                    ballDeltaY[i] *= -1;
-                    playerThreeP++;
-                    playerThreeMiss= 5;
-                } else {
-                    playerThreeHit = 10;
-                    playerThreeScore++;
-                    ballDeltaY[i] *= -1;
+                ballDeltaY[i] *= -1;
+                if(playerThreeP<limit) {
+                    if (nextBallLeft[i] >= playerThreeRight || nextBallRight[i] <= playerThreeLeft) {
+                        playerThreeP++;
+                        playerThreeMiss = 5;
+                    } else {
+                        playerThreeHit = 10;
+                        playerThreeScore++;
+                    }
                 }
             }
 

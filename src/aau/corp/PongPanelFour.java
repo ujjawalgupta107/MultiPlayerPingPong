@@ -45,6 +45,7 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
     int paddle ;
     private int paddleSpeed ;
     int time = 0;
+    int limit= 5;
     int n;// = 2;  //number of balls
     int r = 1;  //ration of the paddle length
     int p = 5;  //paddle speed
@@ -189,7 +190,6 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         clientsocket = new DatagramSocket(local_port_number);
         clientsocket.setSoTimeout(1000);
         String info = playerFourX + "-" + playerFourHit + "-" + playerFourMiss + "-" + playerFourScore + "-" + "4"+"-" + playerFourP + "-";
-
 
         for(int i=0;i<second_ip.length;i++)
         {
@@ -395,7 +395,9 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
             nextBallX[i]         = (ballX[i] + ballX[i])/2;
             nextBallY[i]         = (ballY[i] + ballY[i])/2;
         }
-        movePaddles();
+        if(playerFourP<limit) {
+            movePaddles();
+        }
         if (time > 150 & n == 4) {
             ballCollision(4, 4);
         }
@@ -447,14 +449,15 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
 
             //will the ball go below the bottom
             if (nextBallBottom[i] >= (boardY - 35)) {
-                if (nextBallLeft[i] >= playerFourRight || nextBallRight[i] <= playerFourLeft) {
-                    ballDeltaY[i] *= -1;
-                    playerFourP++;
-                    playerFourMiss = 5;
-                } else {
-                    playerFourHit = 10;
-                    playerFourScore++;
-                    ballDeltaY[i] *= -1;
+                ballDeltaY[i] *= -1;
+                if(playerFourP<limit) {
+                    if (nextBallLeft[i] >= playerFourRight || nextBallRight[i] <= playerFourLeft) {
+                        playerFourP++;
+                        playerFourMiss = 5;
+                    } else {
+                        playerFourHit = 10;
+                        playerFourScore++;
+                    }
                 }
             }
 
