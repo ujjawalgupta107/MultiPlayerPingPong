@@ -22,7 +22,6 @@ public class CreateGame extends Panel{
 
     static JFrame framep = new JFrame("Create Game");
 
-
     public CreateGame(JFrame frame){
 
         createGameButton.setAction(new AbstractAction() {
@@ -57,6 +56,8 @@ public class CreateGame extends Panel{
         if(playerTpeC.getSelectedIndex()==1){no_of_players=3;}
         if(playerTpeC.getSelectedIndex()==2){no_of_players=3;}
         if(playerTpeC.getSelectedIndex()==3){no_of_players=2;}
+
+        int number_of_balls = BallNumberC.getSelectedIndex();
 
         network(no_of_players);
     }

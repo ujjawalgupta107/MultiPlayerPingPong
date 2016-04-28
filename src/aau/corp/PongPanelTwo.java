@@ -157,7 +157,7 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
         timer.start();
         clientsocket = new DatagramSocket(local_port_number);
         clientsocket.setSoTimeout(1000);
-        String info = playerTwoY + "-" + playerTwoHit + "-" + playerTwoMiss + "-" + playerTwoScore + "-" + "2" + "-";
+        String info = playerTwoY + "-" + playerTwoHit + "-" + playerTwoMiss + "-" + playerTwoScore + "-" + "2" + "-" + playerTwoP + "-";
 
 
         for (int i = 0; i < second_ip.length; i++) {
@@ -218,18 +218,21 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
                             playerOneHit = Integer.parseInt(splitResponse[1]);
                             playerOneMiss = Integer.parseInt(splitResponse[2]);
                             playerOneScore = Integer.parseInt(splitResponse[3]);
+                            playerOneP = Integer.parseInt(splitResponse[5]);
                             a = 1;
                         } else if (Integer.parseInt(splitResponse[4]) == 3) {
                             playerThreeX = Integer.parseInt(splitResponse[0]);
                             playerThreeHit = Integer.parseInt(splitResponse[1]);
                             playerThreeMiss = Integer.parseInt(splitResponse[2]);
                             playerThreeScore = Integer.parseInt(splitResponse[3]);
+                            playerThreeP = Integer.parseInt(splitResponse[5]);
                             b = 1;
                         } else if (Integer.parseInt(splitResponse[4]) == 4) {
                             playerFourX = Integer.parseInt(splitResponse[0]);
                             playerFourHit = Integer.parseInt(splitResponse[1]);
                             playerFourMiss = Integer.parseInt(splitResponse[2]);
                             playerFourScore = Integer.parseInt(splitResponse[3]);
+                            playerFourP = Integer.parseInt(splitResponse[5]);
                             c = 1;
                         }
                     }
@@ -289,25 +292,29 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
         }
 
         if (a * b * c == 0) {
-            if (a == 0) {
+            if (!connection1) {
                 isPlayerOneActive= false;
-                playerOneHit = 0;
-                playerOneMiss = 0;
+                //playerOneHit = 0;
+                //playerOneMiss = 0;
                 //  playerOneScore = 0;
             }
 
-            if (b == 0) {
-                isPlayerThreeActive= false;
-                playerThreeHit = 0;
-                playerThreeMiss = 0;
-                //  playerThreeScore = 0;
+            if (!connection3) {
+                if (second_ip.length > 1) {
+                    isPlayerThreeActive = false;
+                    // playerThreeHit = 0;
+                    //playerThreeMiss = 0;}
+                    //  playerThreeScore = 0;
+                }
             }
 
-            if (c == 0) {
-                isPlayerFourActive= false;
-                playerFourHit = 0;
-                playerFourMiss = 0;
-                // playerFourScore = 0;
+            if (!connection4) {
+                if(second_ip.length>2) {
+                    isPlayerFourActive = false;
+                  //  playerFourHit = 0;
+                    //playerFourMiss = 0;
+                    // playerFourScore = 0;
+                }
 
             }
 
@@ -336,11 +343,19 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
         }
 
         //<editor-fold desc="managing the variable for miss and hit">
-        if (playerTwoHit > 0) {
-            playerTwoHit--;
+        if (playerTwoHit > 0) {playerTwoHit--;}
+        if (playerTwoMiss > 0) {playerTwoMiss--;}
+        if(!isPlayerFourActive){
+            if (playerFourHit > 0) { playerFourHit--;}
+            if (playerFourMiss > 0) {playerFourMiss--;}
         }
-        if (playerTwoMiss > 0) {
-            playerTwoMiss--;
+        if(!isPlayerOneActive){
+            if (playerOneHit > 0) { playerOneHit--;}
+            if (playerOneMiss > 0) {playerOneMiss--;}
+        }
+        if(!isPlayerThreeActive){
+            if(playerThreeHit>0){playerThreeHit--;}
+            if(playerThreeMiss>0){playerThreeMiss--;}
         }
         //</editor-fold>
 
@@ -372,9 +387,18 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
             ballCollision(3, 3);
         }
         //<editor-fold desc="defining variables for paddle position for each player">
+        int playerOneRight = playerOneX + playerOneWidth;
+        int playerOneTop = playerOneY;
+        int playerOneBottom = playerOneY + playerOneHeight;
         int playerTwoLeft = playerTwoX;
         int playerTwoTop = playerTwoY;
         int playerTwoBottom = playerTwoY + playerTwoHeight;
+        int playerThreeTop = playerThreeY +playerThreeHeight;
+        int playerThreeLeft = playerThreeX;
+        int playerThreeRight = playerThreeX + playerThreeWidth;
+        int playerFourBottom = playerFourY;
+        int playerFourLeft = playerFourX;
+        int playerFourRight = playerFourX + playerFourWidth;
         //</editor-fold>
 
         for (int i = 0; i < ballX.length; i++) {
@@ -382,16 +406,43 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
             //will the ball go over the top
             if (nextBallTop[i] <= 35) {
                 ballDeltaY[i] *= -1;
+                if(isPlayerThreeActive==false) {
+                    if (nextBallLeft[i] >= playerThreeRight || nextBallRight[i] <= playerThreeLeft) {
+                        playerThreeP++;
+                        playerThreeMiss = 5;
+                    } else {
+                        playerThreeHit = 10;
+                        playerThreeScore++;
+                    }
+                }
             }
 
             //will the ball go below the bottom
             if (nextBallBottom[i] >= (boardY - 35)) {
                 ballDeltaY[i] *= -1;
+                if(isPlayerFourActive==false){
+                    if (nextBallLeft[i] >= playerFourRight || nextBallRight[i] <= playerFourLeft) {
+                        playerFourP++;
+                        playerFourMiss = 5;
+                    } else {
+                        playerFourHit = 10;
+                        playerFourScore++;
+                    }
+                }
             }
 
             //will the ball go off the left side?
             if (nextBallLeft[i] <= 35) {
                 ballDeltaX[i] *= -1;
+                if(isPlayerOneActive==false){
+                    if (nextBallTop[i] >= playerOneBottom || nextBallBottom[i] <= playerOneTop) {
+                        playerOneP++;
+                        playerOneMiss = 5;
+                    } else {
+                        playerOneHit = 10;
+                        playerOneScore++;
+                    }
+                }
             }
 
             //will the ball go off the right side?
@@ -414,7 +465,7 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
 
         }
 
-        String information = playerTwoY + "-" + playerTwoHit + "-" + playerTwoMiss + "-" + playerTwoScore + "-" + "2" + "-";
+        String information = playerTwoY + "-" + playerTwoHit + "-" + playerTwoMiss + "-" + playerTwoScore + "-" + "2" + "-" + playerTwoP + "-";
 
         for (int i = 0; i < second_ip.length; i++) {
             byte[] senddata = information.getBytes();
@@ -524,18 +575,11 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
         g.drawString("P4: " + String.valueOf(playerFourP), boardX / 2 + 60, boardY / 2 + 25);
 
 
-        if(doit3>2 && doit3<8)
-        {g.drawString("WAITING FOR PLAYER3",100,50);}
-        else if(doit1>2 && doit1<8)
-        {g.drawString("WAITING FOR PLAYER1",100,50);}
-        else if(doit4>2 && doit4<8)
-        {g.drawString("WAITING FOR PLAYER4",100,50);}
-
-        if(doit1>7 && doit1<10 )
+        if(doit1>8 && doit1<10 )
         {g.drawString("PLAYER1 DISCONNECTS",100,50);}
-        if(doit3>7 && doit3<10 )
+        if(doit3>8 && doit3<10 )
         {g.drawString("PLAYER3 DISCONNECTS",100,50);}
-        if(doit4>7 && doit4<10 )
+        if(doit4>8 && doit4<10 )
         {g.drawString("PLAYER4 DISCONNECTS",100,50);}
 
 

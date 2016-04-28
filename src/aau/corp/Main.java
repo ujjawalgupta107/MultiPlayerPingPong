@@ -19,7 +19,6 @@ public class Main {
         DatagramSocket clientSocket = new DatagramSocket();
         // prepare Data
         byte[] sendData = "Hello".getBytes();
-
         // send Data to Server with fix IP (X.X.X.X)
         // Client1 uses port 7070, Client2 uses port 7071
 

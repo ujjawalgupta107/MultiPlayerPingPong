@@ -161,7 +161,7 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         timer.start();
         clientsocket = new DatagramSocket(local_port_number);
         clientsocket.setSoTimeout(1000);
-        String info = playerFourX + "-" + playerFourHit + "-" + playerFourMiss + "-" + playerFourScore + "-" + "4"+"-";
+        String info = playerFourX + "-" + playerFourHit + "-" + playerFourMiss + "-" + playerFourScore + "-" + "4"+"-" + playerFourP + "-";
 
 
         for(int i=0;i<second_ip.length;i++)
@@ -225,18 +225,21 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
                         playerOneHit = Integer.parseInt(splitResponse[1]);
                         playerOneMiss = Integer.parseInt(splitResponse[2]);
                         playerOneScore = Integer.parseInt(splitResponse[3]);
+                        playerOneP = Integer.parseInt(splitResponse[5]);
                         a = 1;
                     } else if (Integer.parseInt(splitResponse[4]) == 3) {
                         playerThreeX = Integer.parseInt(splitResponse[0]);
                         playerThreeHit = Integer.parseInt(splitResponse[1]);
                         playerThreeMiss = Integer.parseInt(splitResponse[2]);
                         playerThreeScore = Integer.parseInt(splitResponse[3]);
+                        playerThreeP = Integer.parseInt(splitResponse[5]);
                         c = 1;
                     } else if (Integer.parseInt(splitResponse[4]) == 2) {
                         playerTwoY = Integer.parseInt(splitResponse[0]);
                         playerTwoHit = Integer.parseInt(splitResponse[1]);
                         playerTwoMiss = Integer.parseInt(splitResponse[2]);
                         playerTwoScore = Integer.parseInt(splitResponse[3]);
+                        playerTwoP = Integer.parseInt(splitResponse[5]);
                         b = 1;
                     }
 
@@ -290,7 +293,7 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         }
         if(a*b*c==0)
         {
-            if(a==0)
+            if(!connection1)
             {
                 isPlayerOneActive= false;
                 //playerOneHit = 0;
@@ -298,7 +301,7 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
                 //    playerOneScore = 0;
             }
 
-            if (b==0)
+            if (!connection2)
             {
                 isPlayerTwoActive= false;
                 //playerTwoHit = 0;
@@ -306,7 +309,7 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
                 //   playerTwoScore = 0;
             }
 
-            if (c==0)
+            if (!connection3)
             {
                 isPlayerThreeActive= false;
                 //playerThreeHit = 0;
@@ -342,6 +345,18 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         //<editor-fold desc="managing the variable for miss and hit">
         if(playerFourHit>0){playerFourHit--;}
         if(playerFourMiss>0){playerFourMiss--;}
+        if(!isPlayerOneActive){
+            if (playerOneHit > 0) { playerOneHit--;}
+            if (playerOneMiss > 0) {playerOneMiss--;}
+        }
+        if(!isPlayerTwoActive){
+            if (playerTwoHit > 0) {playerTwoHit--;}
+            if (playerTwoMiss > 0) {playerTwoMiss--;}
+        }
+        if(!isPlayerThreeActive){
+            if(playerThreeHit>0){playerThreeHit--;}
+            if(playerThreeMiss>0){playerThreeMiss--;}
+        }
         //</editor-fold>
 
         //where will the ball be after it moves?
@@ -373,6 +388,15 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
 
 
         //<editor-fold desc="defining variables for paddle position for each player">
+        int playerOneRight = playerOneX + playerOneWidth;
+        int playerOneTop = playerOneY;
+        int playerOneBottom = playerOneY + playerOneHeight;
+        int playerTwoLeft = playerTwoX;
+        int playerTwoTop = playerTwoY;
+        int playerTwoBottom = playerTwoY + playerTwoHeight;
+        int playerThreeTop = playerThreeY +playerThreeHeight;
+        int playerThreeLeft = playerThreeX;
+        int playerThreeRight = playerThreeX + playerThreeWidth;
         int playerFourBottom = playerFourY;
         int playerFourLeft = playerFourX;
         int playerFourRight = playerFourX + playerFourWidth;
@@ -383,6 +407,15 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
             //will the ball go over the top
             if (nextBallTop[i] <= 35) {
                 ballDeltaY[i] *= -1;
+                if(isPlayerThreeActive==false) {
+                    if (nextBallLeft[i] >= playerThreeRight || nextBallRight[i] <= playerThreeLeft) {
+                        playerThreeP++;
+                        playerThreeMiss = 5;
+                    } else {
+                        playerThreeHit = 10;
+                        playerThreeScore++;
+                    }
+                }
             }
 
             //will the ball go below the bottom
@@ -401,11 +434,29 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
             //will the ball go off the left side?
             if (nextBallLeft[i] <= 35) {
                 ballDeltaX[i] *= -1;
+                if(isPlayerOneActive==false){
+                    if (nextBallTop[i] >= playerOneBottom || nextBallBottom[i] <= playerOneTop) {
+                        playerOneP++;
+                        playerOneMiss = 5;
+                    } else {
+                        playerOneHit = 10;
+                        playerOneScore++;
+                    }
+                }
             }
 
             //will the ball go off the right side?
             if (nextBallRight[i] >= boardX-35) {
                 ballDeltaX[i] *= -1;
+                if(isPlayerTwoActive==false){
+                    if (nextBallTop[i] >= playerTwoBottom || nextBallBottom[i] <= playerTwoTop) {
+                        playerTwoP++;
+                        playerTwoMiss = 5;
+                    } else {
+                        playerTwoHit = 10;
+                        playerTwoScore++;
+                    }
+                }
             }
             //move the ball
             ballX[i] += ballDeltaX[i];
@@ -413,7 +464,7 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         }
         //////////////////////////////////////
 
-        String information = playerFourX + "-" + playerFourHit + "-" + playerFourMiss + "-" + playerFourScore + "-" + "4"+"-";
+        String information = playerFourX + "-" + playerFourHit + "-" + playerFourMiss + "-" + playerFourScore + "-" + "4"+"-"+ playerFourP + "-";
 
         for(int i=0;i<second_ip.length;i++)
         {
@@ -525,18 +576,11 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         g.drawString("P3: "+ String.valueOf(playerThreeP), boardX/2+10, boardY/2+25);
         g.drawString("P4: "+ String.valueOf(playerFourP), boardX/2+60, boardY/2+25);
 
-        if(doit3>2 && doit3<8)
-        {g.drawString("WAITING FOR PLAYER3",100,50);}
-        else if(doit2>2 && doit2<8)
-        {g.drawString("WAITING FOR PLAYER2",100,50);}
-        else if(doit1>2 && doit1<8)
-        {g.drawString("WAITING FOR PLAYER1",100,50);}
-
-        if(doit2>7 && doit2<10 )
+        if(doit2>8 && doit2<10 )
         {g.drawString("PLAYER2 DISCONNECTS",100,50);}
-        if(doit3>7 && doit3<10 )
+        if(doit3>8 && doit3<10 )
         {g.drawString("PLAYER3 DISCONNECTS",100,50);}
-        if(doit1>7 && doit1<10 )
+        if(doit1>8 && doit1<10 )
         {g.drawString("PLAYER4 DISCONNECTS",100,50);}
 
         //<editor-fold desc="draw coloer paddles">
