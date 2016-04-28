@@ -175,19 +175,19 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         playerFourHeight = 10;        // System.out.println("here");
 ////////////////////////////////////
         if(aiLevel==1){
-            r = 1;  //ration of the paddle length
+            r = 2;  //ration of the paddle length
             p = paddle/10;  //paddle speed
-            t = 3;  //time ratio
+            t = 2;  //time ratio
         }
         if(aiLevel==2){
             r = 1;  //ration of the paddle length
             p = paddle/20;  //paddle speed
-            t = 5;  //time ratio
+            t = 3;  //time ratio
         }
-        if(aiLevel==3){
-            r = 2;  //ration of the paddle length
-            p = paddle/25;  //paddle speed
-            t = 8;  //time ratio
+        if(aiLevel==3) {
+            r = 1;  //ration of the paddle length
+            p = paddle / 25;  //paddle speed
+            t = 4;  //time ratio
         }
         for(int i = 0 ; i<ballX.length ; i++) {
             ballX[i] = boardX / 2 - 7;            //has to be changed by ujjwal

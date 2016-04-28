@@ -156,19 +156,19 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener {
         //</editor-fold>
 
         if(aiLevel==1){
-            r = 1;  //ration of the paddle length
+            r = 2;  //ration of the paddle length
             p = paddle/10;  //paddle speed
-            t = 4;  //time ratio
+            t = 2;  //time ratio
         }
         if(aiLevel==2){
             r = 1;  //ration of the paddle length
-            p = paddle/25;  //paddle speed
-            t = 5;  //time ratio
+            p = paddle/20;  //paddle speed
+            t = 3;  //time ratio
         }
-        if(aiLevel==3){
-            r = 2;  //ration of the paddle length
-            p = paddle/25;  //paddle speed
-            t = 8;  //time ratio
+        if(aiLevel==3) {
+            r = 1;  //ration of the paddle length
+            p = paddle / 25;  //paddle speed
+            t = 4;  //time ratio
         }
         for (int i = 0; i < ballX.length; i++) {
             ballX[i] = boardX / 2 - 7;            //has to be changed by ujjwal
@@ -208,7 +208,10 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener {
         track2 ++;
         if (track2 == t) {
             track2 =0;
-            movePlayerTwo();
+
+            if(playerTwoP<limit) {
+                movePlayerTwo();
+            }
         }
 
 
@@ -241,12 +244,12 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener {
         if (playerOneMiss > 0) {
             playerOneMiss--;
         }
-            if (playerTwoHit > 0) {
-                playerTwoHit--;
-            }
-            if (playerTwoMiss > 0) {
-                playerTwoMiss--;
-            }
+        if (playerTwoHit > 0) {
+            playerTwoHit--;
+        }
+        if (playerTwoMiss > 0) {
+            playerTwoMiss--;
+        }
         //</editor-fold>
 
         //where will the ball be after it moves?
@@ -283,10 +286,7 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener {
         int playerOneBottom = playerOneY + playerOneHeight;
         int playerTwoTop = playerTwoY;
         int playerTwoBottom = playerTwoY + playerTwoHeight;
-        int playerThreeLeft = playerThreeX;
-        int playerThreeRight = playerThreeX + playerThreeWidth;
-        int playerFourLeft = playerFourX;
-        int playerFourRight = playerFourX + playerFourWidth;
+
         //</editor-fold>
 
         for (int i = 0; i < n; i++) {
@@ -319,7 +319,7 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener {
             //will the ball go off the right side?
             if (nextBallRight[i] >= boardX - 35) {
                 ballDeltaX[i] *= -1;
-
+                if(playerTwoP<limit) {
                     if (nextBallTop[i] >= playerTwoBottom || nextBallBottom[i] <= playerTwoTop) {
                         playerTwoP++;
                         playerTwoMiss = 5;
@@ -327,6 +327,7 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener {
                         playerTwoHit = 10;
                         playerTwoScore++;
                     }
+                }
 
             }
 
