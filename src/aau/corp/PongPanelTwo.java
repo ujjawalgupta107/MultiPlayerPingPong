@@ -22,6 +22,7 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
     boolean connection3 = true;
     boolean connection4 = true;
     int doit1=0,doit3=0,doit4=0;
+    int won2=0;
 
     int local_port_number;
     InetAddress[] second_ip;
@@ -539,6 +540,17 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
             clientsocket.send(sendpack);
             // System.out.println("sending again to" + second_port[i]);
         }
+
+        if (won2==1)
+        {
+            for(int i = 0 ; i<ballDeltaX.length ; i++){
+                ballDeltaX[i] = 0;}
+
+            for(int i = 0 ; i<ballDeltaX.length ; i++){
+                ballDeltaY[i] = 0;}
+        }
+
+
         repaint();
     }
 
@@ -647,11 +659,43 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
         {g.drawString("PLAYER 3 DISCONNECTS",100,50);}
         if(doit4>8 && doit4<10 )
         {g.drawString("PLAYER 4 DISCONNECTS",100,50);}
-        if(playerTwoP>=limit){
-            g.drawString("You LOST",boardX-50,boardY-10);}
 
 
-            //<editor-fold desc="draw coloer paddles">
+
+        if(playerTwoP<limit) {
+
+            if (no_of_players == 2) {
+                if (playerOneP >= limit) {
+                    g.drawString("YOU WON", boardX/2 -25, boardY - 50);
+                    won2=1;
+                }
+            }
+            else if (no_of_players==3)
+            {
+                if((playerOneP>=limit) && (playerThreeP>=limit))
+                {
+                    g.drawString("YOU WON",boardX/2 -25, boardY - 50);
+                    won2=1;
+                }
+            }
+            else
+            {
+                if((playerOneP>=limit) && (playerThreeP>=limit) &&(playerFourP>=limit))
+                {
+                    g.drawString("YOU WON",boardX/2 -25, boardY - 50);
+                    won2=1;
+                }
+
+            }
+        }
+        else
+        {
+            g.drawString("You LOST",boardX/2 -25,boardY-50);
+        }
+
+
+
+        //<editor-fold desc="draw coloer paddles">
         //draw the paddles
         g.setColor(Color.white);
         if(no_of_players>=1) {

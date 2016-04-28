@@ -24,6 +24,7 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
     boolean connection3 = true;
     boolean connection1 = true;
     int doit2=0,doit3=0,doit1=0;
+    int won4=0;
 
 
     int local_port_number;
@@ -544,6 +545,16 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         }
 
         //stuff has moved, tell this JPanel to repaint itself
+
+        if (won4==1)
+        {
+            for(int i = 0 ; i<ballDeltaX.length ; i++){
+                ballDeltaX[i] = 0;}
+
+            for(int i = 0 ; i<ballDeltaX.length ; i++){
+                ballDeltaY[i] = 0;}
+        }
+
         repaint();
     }
 
@@ -651,9 +662,27 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         {g.drawString("PLAYER 3 DISCONNECTS",100,50);}
         if(doit1>8 && doit1<10 )
         {g.drawString("PLAYER 4 DISCONNECTS",100,50);}
-        if(playerFourP>=limit){
-            {g.drawString("You LOST",boardX-50,boardY-10);}
+
+
+        if(playerFourP<limit) {
+
+
+
+                if((playerOneP>=limit) && (playerTwoP>=limit) &&(playerThreeP>=limit))
+                {
+                    g.drawString("YOU WON",boardX/2 -25, boardY - 50);
+                    won4=1;
+                }
+
+
+
         }
+        else
+        {
+            g.drawString("You LOST",boardX/2 -25,boardY-50);
+        }
+
+
 
         //<editor-fold desc="draw coloer paddles">
         //draw the paddles

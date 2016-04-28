@@ -25,6 +25,7 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     boolean connection2 = true;
     boolean connection4 = true;
     int doit1=0,doit2=0,doit4=0;
+    int won3=0;
 
     int local_port_number;
     InetAddress[] second_ip;
@@ -534,6 +535,15 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         }
 
         //stuff has moved, tell this JPanel to repaint itself
+
+        if (won3==1)
+        {
+            for(int i = 0 ; i<ballDeltaX.length ; i++){
+                ballDeltaX[i] = 0;}
+
+            for(int i = 0 ; i<ballDeltaX.length ; i++){
+                ballDeltaY[i] = 0;}
+        }
         repaint();
     }
 
@@ -642,10 +652,34 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         else if(doit4>8 && doit4<10 )
         {g.drawString("PLAYER 4 DISCONNECTS",100,50);}
 
-        if(playerThreeP>=limit) {
-            {
-                g.drawString("You LOST", boardX-50,boardY-10);
+
+            if(playerThreeP<limit) {
+
+                 if (no_of_players==3)
+                {
+                    if((playerOneP>=limit) && (playerTwoP>=limit))
+                    {
+                        g.drawString("YOU WON",boardX/2 -25, boardY - 50);
+                        won3=1;
+                    }
+                }
+                else
+                {
+                    if((playerOneP>=limit) && (playerTwoP>=limit) &&(playerFourP>=limit))
+                    {
+                        g.drawString("YOU WON",boardX/2 -25, boardY - 50);
+                        won3=1;
+                    }
+
+                }
+
             }
+            else
+            {
+                g.drawString("You LOST",boardX/2 -25,boardY-50);
+            }
+
+
 
 
             //<editor-fold desc="draw coloer paddles">
@@ -692,7 +726,7 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
                 }
             }
             //</editor-fold>
-        }
+
     }
     public void keyTyped(KeyEvent e) {}
 

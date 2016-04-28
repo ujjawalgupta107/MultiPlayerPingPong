@@ -23,6 +23,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
     boolean connection3 = true;
     boolean connection4 = true;
     int doit2 = 0, doit3 = 0, doit4 = 0;
+    int won =0;
 
     int local_port_number;
     InetAddress[] second_ip;
@@ -253,6 +254,8 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
     }
 
     private void step() throws IOException {
+
+
 
 
         int a = 0;
@@ -559,6 +562,17 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
             clientsocket.send(sendpack);
             //System.out.println("sending again to" + second_port[i]);
         }
+
+
+        if (won==1)
+        {
+            for(int i = 0 ; i<ballDeltaX.length ; i++){
+                ballDeltaX[i] = 0;}
+
+            for(int i = 0 ; i<ballDeltaX.length ; i++){
+                ballDeltaY[i] = 0;}
+        }
+
         repaint();
     }
 
@@ -671,8 +685,39 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
         } else if (doit4 > 8 && doit4 < 10) {
             g.drawString("PLAYER 4 DISCONNECTED", 100, 50);
         }
-        if(playerOneP>=limit){
-            g.drawString("You LOST",boardX-50,boardY-100);}
+
+
+        if(playerOneP<limit) {
+
+            if (no_of_players == 2) {
+                if (playerTwoP >= limit) {
+                    g.drawString("YOU WON", boardX/2 - 25, boardY - 50);
+                    won=1;
+                }
+            }
+                else if (no_of_players==3)
+                {
+                    if((playerTwoP>=limit) && (playerThreeP>=limit))
+                    {
+                        g.drawString("YOU WON",boardX/2 - 25, boardY - 50);
+                        won=1;
+                    }
+                }
+                else
+                {
+                    if((playerTwoP>=limit) && (playerThreeP>=limit) &&(playerFourP>=limit))
+                    {
+                        g.drawString("YOU WON",boardX/2 - 25, boardY - 50);
+                        won=1;
+                    }
+
+                }
+            }
+        else
+        {
+            g.drawString("You LOST",boardX/2 - 25,boardY-50);
+        }
+
 
 
 
