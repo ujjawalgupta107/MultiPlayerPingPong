@@ -637,14 +637,16 @@ public class PongPanelTwo extends JPanel implements ActionListener, KeyListener 
 
 
         if(doit1>8 && doit1<10 )
-        {g.drawString("PLAYER DISCONNECTS",100,50);}
+        {g.drawString("PLAYER 1 DISCONNECTS",100,50);}
         if(doit3>8 && doit3<10 )
-        {g.drawString("PLAYER DISCONNECTS",100,50);}
+        {g.drawString("PLAYER 3 DISCONNECTS",100,50);}
         if(doit4>8 && doit4<10 )
-        {g.drawString("PLAYER DISCONNECTS",100,50);}
+        {g.drawString("PLAYER 4 DISCONNECTS",100,50);}
+        if(playerTwoP>=limit){
+            g.drawString("You LOST",boardX-50,boardY-10);}
 
 
-        //<editor-fold desc="draw coloer paddles">
+            //<editor-fold desc="draw coloer paddles">
         //draw the paddles
         g.setColor(Color.white);
         if(no_of_players>=1) {

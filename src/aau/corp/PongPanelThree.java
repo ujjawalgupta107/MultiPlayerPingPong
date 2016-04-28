@@ -629,57 +629,63 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
 
 
         if(doit2>8 && doit2<10 )
-        {g.drawString("PLAYER DISCONNECTS",100,50);}
+        {g.drawString("PLAYER 2 DISCONNECTS",100,50);}
         else if(doit1>8 && doit1<10 )
-        {g.drawString("PLAYER DISCONNECTS",100,50);}
+        {g.drawString("PLAYER 1 DISCONNECTS",100,50);}
         else if(doit4>8 && doit4<10 )
-        {g.drawString("PLAYER DISCONNECTS",100,50);}
+        {g.drawString("PLAYER 4 DISCONNECTS",100,50);}
 
-        //<editor-fold desc="draw coloer paddles">
-        //draw the paddles
-        g.setColor(Color.white);
-        if(no_of_players>=1) {
-            if (playerOneHit > 0) {
-                g.setColor(Color.GREEN);
-                g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
-                g.setColor(Color.white);
-            } else if (playerOneHit == 0) {
-                g.setColor(Color.white);
-                g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
+        if(playerThreeP>=limit) {
+            {
+                g.drawString("You LOST", boardX-50,boardY-10);
             }
-        }
-        if(no_of_players>=2) {
-            if (playerTwoHit > 0) {
-                g.setColor(Color.GREEN);
-                g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
-                g.setColor(Color.white);
-            } else if (playerTwoHit == 0) {
-                g.setColor(Color.white);
-                g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
-            }
-        }
-        if(no_of_players>=3) {
-            if (playerThreeHit > 0) {
-                g.setColor(Color.GREEN);
-                g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
-                g.setColor(Color.white);
-            } else if (playerThreeHit == 0) {
-                g.setColor(Color.white);
-                g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
-            }
-        }
-        if(no_of_players>=4) {
-            if (playerFourHit > 0) {
-                g.setColor(Color.GREEN);
-                g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
-                g.setColor(Color.white);
-            } else if (playerFourHit == 0) {
-                g.setColor(Color.white);
-                g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
-            }
-        }
-        //</editor-fold>
 
+
+            //<editor-fold desc="draw coloer paddles">
+            //draw the paddles
+            g.setColor(Color.white);
+            if (no_of_players >= 1) {
+                if (playerOneHit > 0) {
+                    g.setColor(Color.GREEN);
+                    g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
+                    g.setColor(Color.white);
+                } else if (playerOneHit == 0) {
+                    g.setColor(Color.white);
+                    g.fillRect(playerOneX, playerOneY, playerOneWidth, playerOneHeight);
+                }
+            }
+            if (no_of_players >= 2) {
+                if (playerTwoHit > 0) {
+                    g.setColor(Color.GREEN);
+                    g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
+                    g.setColor(Color.white);
+                } else if (playerTwoHit == 0) {
+                    g.setColor(Color.white);
+                    g.fillRect(playerTwoX, playerTwoY, playerTwoWidth, playerTwoHeight);
+                }
+            }
+            if (no_of_players >= 3) {
+                if (playerThreeHit > 0) {
+                    g.setColor(Color.GREEN);
+                    g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
+                    g.setColor(Color.white);
+                } else if (playerThreeHit == 0) {
+                    g.setColor(Color.white);
+                    g.fillRect(playerThreeX, playerThreeY, playerThreeWidth, playerThreeHeight);
+                }
+            }
+            if (no_of_players >= 4) {
+                if (playerFourHit > 0) {
+                    g.setColor(Color.GREEN);
+                    g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
+                    g.setColor(Color.white);
+                } else if (playerFourHit == 0) {
+                    g.setColor(Color.white);
+                    g.fillRect(playerFourX, playerFourY, playerFourWidth, playerFourHeight);
+                }
+            }
+            //</editor-fold>
+        }
     }
     public void keyTyped(KeyEvent e) {}
 

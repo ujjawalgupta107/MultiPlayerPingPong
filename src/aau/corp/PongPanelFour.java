@@ -638,11 +638,14 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
         if(no_of_players==4){g.drawString("P4: "+ String.valueOf(playerFourP), boardX/2+60, boardY/2+25);}
 
         if(doit2>8 && doit2<10 )
-        {g.drawString("PLAYER DISCONNECTS",100,50);}
+        {g.drawString("PLAYER 2 DISCONNECTS",100,50);}
         if(doit3>8 && doit3<10 )
-        {g.drawString("PLAYER DISCONNECTS",100,50);}
+        {g.drawString("PLAYER 3 DISCONNECTS",100,50);}
         if(doit1>8 && doit1<10 )
-        {g.drawString("PLAYER DISCONNECTS",100,50);}
+        {g.drawString("PLAYER 4 DISCONNECTS",100,50);}
+        if(playerFourP>=limit){
+            {g.drawString("You LOST",boardX-50,boardY-10);}
+        }
 
         //<editor-fold desc="draw coloer paddles">
         //draw the paddles
