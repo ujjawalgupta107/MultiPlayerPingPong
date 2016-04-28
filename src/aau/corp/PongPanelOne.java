@@ -236,6 +236,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
         //will control the reaction rate of the computer player
         track2 = track2 + 1;
         if (track2 == t) {
+            track2 =0;
             if (!isPlayerOneActive) {
                 movePlayerOne();
             }
@@ -253,9 +254,6 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
 
     private void step() throws IOException {
 
-        if(playerTwoP>=limit){isPlayerTwoActive=true;}
-        if(playerThreeP>=limit){isPlayerThreeActive=true;}
-        if(playerFourP>=limit){isPlayerFourActive=true;}
 
         int a = 0;
         int b = 0;
@@ -361,7 +359,10 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
             }
         }
 
+
+
         if (!connection2) {
+
             isPlayerTwoActive = false;
             //playerTwoHit = 0;
             //playerTwoMiss = 0;
@@ -384,6 +385,11 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
             }
 
         }
+
+        if(playerTwoP>=limit){isPlayerTwoActive=true;}
+        if(playerThreeP>=limit){isPlayerThreeActive=true;}
+        if(playerFourP>=limit){isPlayerFourActive=true;}
+
 
         if (time == 0) {
             ballDeltaX[0] = BallDeltaXArray[0];

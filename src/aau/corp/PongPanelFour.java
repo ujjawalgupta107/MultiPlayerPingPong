@@ -382,6 +382,10 @@ public class PongPanelFour extends JPanel implements ActionListener, KeyListener
 
         }
 
+        if(playerOneP>=limit){isPlayerOneActive=true;}
+        if(playerThreeP>=limit){isPlayerThreeActive=true;}
+        if(playerFourP>=limit){isPlayerFourActive=true;}
+
 
         if (time == 0) {
             ballDeltaX[0] = BallDeltaXArray[0];

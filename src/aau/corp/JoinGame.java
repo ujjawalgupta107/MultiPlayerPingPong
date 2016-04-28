@@ -19,7 +19,7 @@ public class JoinGame {
     private JLabel answer_player;
     private static int player_number;
 
-    public JoinGame(JFrame frame){
+    public JoinGame(final JFrame frame){
 
         joinGameButton.setAction(new AbstractAction() {
             @Override
@@ -58,7 +58,7 @@ public class JoinGame {
         });
     }
 
-    private static void submit(JTextField textField1) throws IOException {
+    private static void submit(final JTextField textField1) throws IOException {
 
         System.out.println("address "+ textField1.getText());
 

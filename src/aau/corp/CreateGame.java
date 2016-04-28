@@ -26,7 +26,7 @@ public class CreateGame extends Panel{
     static String limit;
     static String level;
 
-    public CreateGame(JFrame frame){
+    public CreateGame(final JFrame frame){
 
         createGameButton.setAction(new AbstractAction() {
             @Override
@@ -83,7 +83,7 @@ public class CreateGame extends Panel{
         if(no_of_players!=1){network(no_of_players, ip_address);}
     }
 
-    public static void network(int player_number_input, String ip_address) throws Exception {
+    public static void network(final int player_number_input, final String ip_address) throws Exception {
 
         // Waiting for Connection of Client1 on Port 7070
         // ////////////////////////////////////////////////
