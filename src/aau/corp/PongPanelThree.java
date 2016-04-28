@@ -36,17 +36,17 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     boolean isPlayerTwoActive = true;
     boolean isPlayerThreeActive = true;
     boolean isPlayerFourActive = true;
-    int size =300;
+    int size;// =300;
     int startRate = 20;        //frame refreshes after every 100 millisecond
     Timer timer;
     int track2 = 0;
-    int boardX = size;
-    int boardY = size;
-    int paddle = size/6;
-    private int paddleSpeed = paddle/3;
+    int boardX;
+    int boardY ;
+    int paddle ;
+    private int paddleSpeed ;
     int time = 0;
 
-    int n = 2;  //number of balls
+    int n;// = 2;  //number of balls
     int r = 1;  //ration of the paddle length
     int p = 5;  //paddle speed
     int t = 2;  //time ratio
@@ -61,25 +61,25 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     //y direction ---> up   -ve
     //y =500 ---> bottom most point
 
-    private int[] ballX = new int[n];
-    private int[] ballY = new int[n];
+    private int[] ballX ;
+    private int[] ballY ;
 
     private int diameter = 15;
 
     //steps that ball move
 
-    private int ballDeltaX[] = new int[n];
-    private int ballDeltaY[] = new int[n];
+    private int[] ballDeltaX;
+    private int[] ballDeltaY;
 
     int[] BallDeltaXArray = {-2, 3, -1, -2};
     int[] BallDeltaYArray = {1, 1, 3, -2};
 
-    int[] nextBallLeft      =   new int[n];
-    int[] nextBallRight     =   new int[n];
-    int[] nextBallTop       =   new int[n];
-    int[] nextBallBottom    =   new int[n];
-    int[] nextBallX         =   new int[n];
-    int[] nextBallY         =   new int[n];
+    int[] nextBallLeft      ;
+    int[] nextBallRight     ;
+    int[] nextBallTop       ;
+    int[] nextBallBottom    ;
+    int[] nextBallX         ;
+    int[] nextBallY         ;
 
     //<editor-fold desc="variable for paddle position of each player ">
     //payer paddles initial position
@@ -133,7 +133,7 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     //</editor-fold>
 
     //construct a PongPanel
-    public PongPanelThree(int localport,InetAddress[] ip , int[] port) throws IOException{
+    public PongPanelThree(int localport,InetAddress[] ip , int[] port,int grid,int balls) throws IOException{
 
         setBackground(Color.BLACK);
         local_port_number = localport;
@@ -141,7 +141,39 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         second_port = new int[port.length];
         second_ip = ip;
         second_port = port;
-        //System.out.println("here3");
+        n =balls;
+        size = grid;
+        boardX = size;
+        boardY = size;
+        paddle = size/6;
+        paddleSpeed = paddle/10;
+        ballX = new int[n];
+        ballY = new int[n];
+        ballDeltaX = new int[n];
+        ballDeltaY = new int[n];
+        nextBallLeft = new int[n];
+        nextBallRight = new int[n];
+        nextBallTop = new int[n];
+        nextBallBottom = new int[n];
+        nextBallX = new int[n];
+        nextBallY = new int[n];
+
+        playerOneX      = 25;
+        playerOneY      = boardY / 2 - paddle / 2;
+        playerOneWidth  = 10;
+        playerOneHeight = paddle;
+        playerTwoX      = boardX - 25 - 10;
+        playerTwoY      = boardY / 2 - paddle / 2;
+        playerTwoWidth  = 10;
+        playerTwoHeight = paddle;
+        playerThreeX = boardY / 2 - paddle / 2;
+        playerThreeY = 25;
+        playerThreeWidth = paddle;
+        playerThreeHeight = 10;
+        playerFourX = boardY / 2 - paddle / 2;
+        playerFourY = boardY - 25 - 10;
+        playerFourWidth = paddle;
+        playerFourHeight = 10;        //System.out.println("here3");
 /////////////////////////////////////////////////////////////////////
         for(int i = 0 ; i<ballX.length ; i++) {
             ballX[i] = boardX / 2 - 7;            //has to be changed by ujjwal

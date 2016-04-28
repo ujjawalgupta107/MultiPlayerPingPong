@@ -8,9 +8,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-/**
- * Created by Ujjawal Gupta on 25-Apr-16.
- */
 public class CreateGame extends Panel{
 
     private JComboBox playerTpeC;
@@ -22,15 +19,16 @@ public class CreateGame extends Panel{
 
     static JFrame framep = new JFrame("Create Game");
 
+    static String data;
+
     public CreateGame(JFrame frame){
 
         createGameButton.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    submit(playerTpeC, BallNumberC, GridC, aiC);
+                    submit(playerTpeC, BallNumberC, GridC);
                     frame.dispose();
-                    System.out.println("rrrrrrrr");
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 } catch (Exception e1) {
@@ -40,11 +38,10 @@ public class CreateGame extends Panel{
         });
     }
 
-    private void submit(JComboBox playerTpeC, JComboBox BallNumberC, JComboBox GridC, JComboBox aiC) throws Exception {
+    private void submit(JComboBox playerTpeC, JComboBox BallNumberC, JComboBox GridC) throws Exception {
         System.out.println("PlayerType "+ playerTpeC.getSelectedIndex());
         System.out.println("BallNumber "+ BallNumberC.getSelectedIndex());
         System.out.println("GridC "+ GridC.getSelectedIndex());
-        System.out.println("aiC "+ aiC.getSelectedIndex());
 
         int grid =0;
         if(GridC.getSelectedIndex()==0){grid = 300;}
@@ -57,7 +54,9 @@ public class CreateGame extends Panel{
         if(playerTpeC.getSelectedIndex()==2){no_of_players=3;}
         if(playerTpeC.getSelectedIndex()==3){no_of_players=2;}
 
-        int number_of_balls = BallNumberC.getSelectedIndex();
+        int number_of_balls = BallNumberC.getSelectedIndex()+1;
+
+        data = grid +"-" + number_of_balls + "-";
 
         network(no_of_players);
     }
@@ -128,8 +127,8 @@ public class CreateGame extends Panel{
             String toClient1 = "";
             String toClient2 = "";
 
-            toClient1 = msgInfoOfClient2;
-            toClient2 = msgInfoOfClient1;
+            toClient1 = msgInfoOfClient2 + data;
+            toClient2 = msgInfoOfClient1 + data;
 
             // Send Information  to Client1
             serverSocket1.send(new DatagramPacket(toClient1.getBytes(),
@@ -225,9 +224,9 @@ public class CreateGame extends Panel{
             String toClient3 = "";
             String toClient4 = "";
 
-            toClient1 = msgInfoOfClient2 + msgInfoOfClient3;
-            toClient2 = msgInfoOfClient1 + msgInfoOfClient3;
-            toClient3 = msgInfoOfClient1 + msgInfoOfClient2;
+            toClient1 = msgInfoOfClient2 + msgInfoOfClient3 + data;
+            toClient2 = msgInfoOfClient1 + msgInfoOfClient3 + data;
+            toClient3 = msgInfoOfClient1 + msgInfoOfClient2 + data;
 
 
             // Send Information  to Client1
@@ -346,10 +345,10 @@ public class CreateGame extends Panel{
             String toClient3 = "";
             String toClient4 = "";
 
-            toClient1 = msgInfoOfClient2 + msgInfoOfClient3 + msgInfoOfClient4;
-            toClient2 = msgInfoOfClient3 + msgInfoOfClient4 + msgInfoOfClient1;
-            toClient3 = msgInfoOfClient4 + msgInfoOfClient1 + msgInfoOfClient2;
-            toClient4 = msgInfoOfClient1 + msgInfoOfClient2 + msgInfoOfClient3;
+            toClient1 = msgInfoOfClient2 + msgInfoOfClient3 + msgInfoOfClient4 + data;
+            toClient2 = msgInfoOfClient3 + msgInfoOfClient4 + msgInfoOfClient1 + data;
+            toClient3 = msgInfoOfClient4 + msgInfoOfClient1 + msgInfoOfClient2 + data;
+            toClient4 = msgInfoOfClient1 + msgInfoOfClient2 + msgInfoOfClient3 + data;
 
 
             // Send Information  to Client1
