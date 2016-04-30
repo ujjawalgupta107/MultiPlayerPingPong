@@ -25,7 +25,7 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
     boolean connection2 = true;
     boolean connection4 = true;
     int doit1=0,doit2=0,doit4=0;
-    int won3=0;
+    int won3=0,won1=0,won2=0,won4=0;
 
     int local_port_number;
     InetAddress[] second_ip;
@@ -536,7 +536,7 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
 
         //stuff has moved, tell this JPanel to repaint itself
 
-        if (won3==1)
+        if (won3+won1+won2+won4==1)
         {
             for(int i = 0 ; i<ballDeltaX.length ; i++){
                 ballDeltaX[i] = 0;}
@@ -653,14 +653,28 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
         {g.drawString("PLAYER 4 DISCONNECTS",100,50);}
 
 
-            if(playerThreeP<limit) {
+        if (playerThreeP>=limit)
+        {
+            g.drawString("You LOST",boardX/2 + 25,boardY/2-50);
+        }
 
-                 if (no_of_players==3)
+
+        if (no_of_players==3)
                 {
                     if((playerOneP>=limit) && (playerTwoP>=limit))
                     {
                         g.drawString("YOU WON",boardX/2 -25, boardY - 50);
                         won3=1;
+                    }
+                    if((playerOneP>=limit) && (playerThreeP>=limit))
+                    {
+                        g.drawString("PLAYER 2 WON",boardX/2 - 25, boardY - 50);
+                        won2=1;
+                    }
+                    if((playerTwoP>=limit) && (playerThreeP>=limit))
+                    {
+                        g.drawString("PLAYER 1 WON",boardX/2 - 25, boardY - 50);
+                        won1=1;
                     }
                 }
                 else
@@ -670,14 +684,25 @@ public class PongPanelThree extends JPanel implements ActionListener, KeyListene
                         g.drawString("YOU WON",boardX/2 -25, boardY - 50);
                         won3=1;
                     }
+                    if((playerTwoP>=limit) && (playerThreeP>=limit) &&(playerFourP>=limit))
+                    {
+                        g.drawString("PLAYER 1 WON",boardX/2 - 25, boardY - 50);
+                        won1=1;
+                    }
+                    if((playerThreeP>=limit) && (playerOneP>=limit) &&(playerFourP>=limit))
+                    {
+                        g.drawString("PLAYER 2 WON",boardX/2 - 25, boardY - 50);
+                        won2=1;
+                    }
+                    if((playerTwoP>=limit) && (playerThreeP>=limit) &&(playerOneP>=limit))
+                    {
+                        g.drawString("PLAYER 4 WON",boardX/2 - 25, boardY - 50);
+                        won4=1;
+                    }
+
 
                 }
 
-            }
-            else
-            {
-                g.drawString("You LOST",boardX/2 -25,boardY-50);
-            }
 
 
 

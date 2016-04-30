@@ -75,7 +75,7 @@ public class CreateGame extends Panel{
             JFrame frame = new JFrame("Ping Pong");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLayout(new BorderLayout());
-            PongPanel pong = new PongPanel(grid,number_of_balls,aiLevel);
+            PongPanel pong = new PongPanel(grid,number_of_balls,aiLevel, Integer.parseInt(lim));
             frame.add(pong,BorderLayout.CENTER);
             frame.setSize(1000,1000);
             frame.setVisible(true);

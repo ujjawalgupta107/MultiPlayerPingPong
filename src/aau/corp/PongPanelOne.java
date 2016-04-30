@@ -23,7 +23,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
     boolean connection3 = true;
     boolean connection4 = true;
     int doit2 = 0, doit3 = 0, doit4 = 0;
-    int won =0;
+    int won1 =0,won2=0,won3=0,won4=0;
 
     int local_port_number;
     InetAddress[] second_ip;
@@ -564,7 +564,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
         }
 
 
-        if (won==1)
+        if (won1 + won2 +won3 +won4 ==1)
         {
             for(int i = 0 ; i<ballDeltaX.length ; i++){
                 ballDeltaX[i] = 0;}
@@ -572,6 +572,7 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
             for(int i = 0 ; i<ballDeltaX.length ; i++){
                 ballDeltaY[i] = 0;}
         }
+
 
         repaint();
     }
@@ -687,12 +688,19 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
         }
 
 
-        if(playerOneP<limit) {
+        if (playerOneP>=limit)
+        {
+            g.drawString("You LOST",boardX/2 + 25,boardY/2-50);
+        }
 
             if (no_of_players == 2) {
                 if (playerTwoP >= limit) {
                     g.drawString("YOU WON", boardX/2 - 25, boardY - 50);
-                    won=1;
+                    won1=1;
+                }
+                else if(playerOneP >=limit){
+                    g.drawString("PLAYER 1 WON", boardX/2 - 25, boardY - 50);
+                    won2=1;
                 }
             }
                 else if (no_of_players==3)
@@ -700,7 +708,17 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
                     if((playerTwoP>=limit) && (playerThreeP>=limit))
                     {
                         g.drawString("YOU WON",boardX/2 - 25, boardY - 50);
-                        won=1;
+                        won1=1;
+                    }
+                    if((playerOneP>=limit) && (playerThreeP>=limit))
+                    {
+                        g.drawString("PLAYER 2 WON",boardX/2 - 25, boardY - 50);
+                        won2=1;
+                    }
+                    if((playerTwoP>=limit) && (playerOneP>=limit))
+                    {
+                        g.drawString("PLAYER 3 WON",boardX/2 - 25, boardY - 50);
+                        won3=1;
                     }
                 }
                 else
@@ -708,15 +726,29 @@ public class PongPanelOne extends JPanel implements ActionListener, KeyListener 
                     if((playerTwoP>=limit) && (playerThreeP>=limit) &&(playerFourP>=limit))
                     {
                         g.drawString("YOU WON",boardX/2 - 25, boardY - 50);
-                        won=1;
+                        won1=1;
+                    }
+                    if((playerOneP>=limit) && (playerThreeP>=limit) &&(playerFourP>=limit))
+                    {
+                        g.drawString("PLAYER 2 WON",boardX/2 - 25, boardY - 50);
+                        won2=1;
+                    }
+                    if((playerTwoP>=limit) && (playerOneP>=limit) &&(playerFourP>=limit))
+                    {
+                        g.drawString("PLAYER 3 WON",boardX/2 - 25, boardY - 50);
+                        won3=1;
+                    }
+                    if((playerTwoP>=limit) && (playerThreeP>=limit) &&(playerOneP>=limit))
+                    {
+                        g.drawString("PLAYER 4 WON",boardX/2 - 25, boardY - 50);
+                        won4=1;
                     }
 
+
+
                 }
-            }
-        else
-        {
-            g.drawString("You LOST",boardX/2 - 25,boardY-50);
-        }
+
+
 
 
 

@@ -28,7 +28,7 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener {
     int paddle;
     private int paddleSpeed;
     int time = 0;
-    int limit = 5;
+    int limit ;
     int no_of_players =2 ;
     int n; //= 2;  //number of balls
     int r ;  //ration of the paddle length
@@ -116,12 +116,12 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener {
     //</editor-fold>
 
     //construct a PongPanel
-    public PongPanel(int grid, int balls, int aiLevel) throws IOException {
+    public PongPanel(int grid, int balls, int aiLevel, int limit_input) throws IOException {
         //<editor-fold desc="variables">
         setBackground(Color.BLACK);
         n = balls;
         size = grid;
-        limit = 5;
+        limit = limit_input;
         boardX = size;
         boardY = size;
         paddle = size / 6;
@@ -441,6 +441,9 @@ public class PongPanel extends JPanel implements ActionListener, KeyListener {
         if(no_of_players>=2){g.drawString("P2: " + String.valueOf(playerTwoP), boardX / 2 - 50, boardY / 2 + 25);}
         if(no_of_players>=3){g.drawString("P3: " + String.valueOf(playerThreeP), boardX / 2 + 10, boardY / 2 + 25);}
         if(no_of_players==4){g.drawString("P4: " + String.valueOf(playerFourP), boardX / 2 + 60, boardY / 2 + 25);}
+
+
+
 
         //<editor-fold desc="draw coloer paddles">
         //draw the paddles
